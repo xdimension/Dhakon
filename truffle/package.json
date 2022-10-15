@@ -1,0 +1,17 @@
+{
+  "name": "truffle",
+  "version": "1.0.0",
+  "description": "Dhakon project",
+  "main": "truffle-config.js",
+  "dependencies": {
+    "@chainlink/contracts": "^0.5.1",
+    "@ethersproject/bignumber": "^5.7.0",
+    "@openzeppelin/contracts": "^4.7.3",
+    "@truffle/hdwallet-provider": "^2.0.10"
+  },
+  "scripts": {
+    "test": "truffle test"
+  },
+  "author": "",
+  "license": "Commercial"
+}
