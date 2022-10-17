@@ -44,7 +44,7 @@ contract Dhakon is VRFConsumerBase {
             ticketPrice = _ticketPrice;
         }
 
-    function getRandomNumber() internal returns (bytes32 requestId) {
+    function getRandomNumber() internal virtual returns (bytes32 requestId) {
         require(LINK.balanceOf(address(this)) >= VRFFee, "Not enough LINK in contract");
         return requestRandomness(keyHash, VRFFee);
     }
