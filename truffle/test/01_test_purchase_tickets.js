@@ -5,11 +5,6 @@ const Dhakon = artifacts.require("Dhakon");
  */
 contract("Dhakon", (accounts) => {
 
-  it("should assert true", async() => {
-    await Dhakon.deployed();
-    return assert.isTrue(true);
-  });
-
   /*
   it("should return contract's balance", async() => {
     const dhakon = await Dhakon.deployed();
