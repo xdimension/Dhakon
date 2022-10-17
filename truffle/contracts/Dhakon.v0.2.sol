@@ -8,6 +8,8 @@ import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
 contract Dhakon is VRFConsumerBase {
     address owner;
 
+    uint ticketPrice;
+
     address[] public players;
     mapping(address => bool) checkPlayers;
 
@@ -29,7 +31,8 @@ contract Dhakon is VRFConsumerBase {
         address _VRFCoordinator, 
         address _LINKToken, 
         bytes32 _keyHash,
-        uint _VRFFee)
+        uint _VRFFee,
+        uint _ticketPrice)
         VRFConsumerBase(
             _VRFCoordinator,        // Mumbai VRF coordinator 0x8C7382F9D8f56b33781fE506E897a4F1e2d17255
             _LINKToken              // LINK token address 0x326C977E6efc84E512bB9C30f76E30c160eD06FB
@@ -38,6 +41,7 @@ contract Dhakon is VRFConsumerBase {
             VRFFee = _VRFFee;  // 0.0001 * 10 ** 18;    // 0.0001 LINK (Mumbai)
 
             owner = msg.sender;
+            ticketPrice = _ticketPrice;
         }
 
     function getRandomNumber() internal returns (bytes32 requestId) {
@@ -88,7 +92,7 @@ contract Dhakon is VRFConsumerBase {
     }
 
     function enter() public payable {
-        require(msg.value > .01 ether);
+        require(msg.value >= ticketPrice, "Value is below Ticket Price");
 
         // save new ticket entering the round
         uint ticket = generateTicket();
