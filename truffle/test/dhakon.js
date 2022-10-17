@@ -23,7 +23,7 @@ contract("Dhakon", (accounts) => {
   it("should keep FIRST player's address when buying a ticket", async() => {
     const dhakon = await Dhakon.deployed();
     
-    await dhakon.enter({from: accounts[0], value: (0.011 * 10 ** 18).toString() });
+    await dhakon.enter({from: accounts[0], value: (0.11 * 10 ** 18).toString() });
 
     let countTickets = (await dhakon.getNumOfTickets()).toNumber();
     assert.equal(countTickets, 1, "There should be 1 ticket");
@@ -37,7 +37,7 @@ contract("Dhakon", (accounts) => {
   it("should keep SECOND player's address when buying a ticket", async() => {
     const dhakon = await Dhakon.deployed();
     
-    await dhakon.enter({from: accounts[1], value: (0.011 * 10 ** 18).toString() });
+    await dhakon.enter({from: accounts[1], value: (0.11 * 10 ** 18).toString() });
 
     let countTickets = (await dhakon.getNumOfTickets()).toNumber();
     assert.equal(countTickets, 2, "There should be 2 tickets");
@@ -53,6 +53,6 @@ contract("Dhakon", (accounts) => {
 
     let balance = await dhakon.getBalance();
 
-    assert.equal(balance.toString(), (0.022 * 10 ** 18).toString());
+    assert.equal(balance.toString(), (0.22 * 10 ** 18).toString());
   })
 });
