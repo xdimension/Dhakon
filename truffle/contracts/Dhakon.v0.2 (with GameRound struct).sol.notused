@@ -8,19 +8,29 @@ import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
 contract Dhakon is VRFConsumerBase {
     address owner;
 
-    address[] public players;
-    mapping(address => bool) checkPlayers;
-
-    uint[] public tickets;
-    mapping(uint => address payable) public playerTickets;
+    uint public ticketPrice;
 
     struct playerTicket {
         uint ticket;
         address player;
     }
 
-    playerTicket[] public winners;
     bool public isPickingWinner;
+
+    struct GameRound {
+        address[] players;
+        mapping(address => bool) checkPlayers;
+
+        uint[] tickets;
+        mapping(uint => address) playerTickets;
+
+        playerTicket winner;
+
+        bool exist;
+    }
+
+    GameRound[] public gameRounds;
+    uint public roundNum;
 
     bytes32 internal keyHash; // identifies which Chainlink oracle to use
     uint internal VRFFee;        // fee to get random number
@@ -29,15 +39,20 @@ contract Dhakon is VRFConsumerBase {
         address _VRFCoordinator, 
         address _LINKToken, 
         bytes32 _keyHash,
-        uint _VRFFee)
+        uint _VRFFee,
+        uint _ticketPrice)
         VRFConsumerBase(
             _VRFCoordinator,        // Mumbai VRF coordinator 0x8C7382F9D8f56b33781fE506E897a4F1e2d17255
             _LINKToken              // LINK token address 0x326C977E6efc84E512bB9C30f76E30c160eD06FB
         ) {
             keyHash = _keyHash;     // 0x6e75b569a01ef56d18cab6a8e71e6600d6ce853834d4a5748b720d06f878b3a4
             VRFFee = _VRFFee;  // 0.0001 * 10 ** 18;    // 0.0001 LINK (Mumbai)
+            ticketPrice = _ticketPrice;
 
             owner = msg.sender;
+            roundNum = 1;
+
+            initGameRound();
         }
 
     function getRandomNumber() internal returns (bytes32 requestId) {
@@ -46,8 +61,8 @@ contract Dhakon is VRFConsumerBase {
     }
 
     function fulfillRandomness(bytes32 requestId, uint randomness) internal override {
-        uint index = randomness % tickets.length;
-        payWinner(index);
+        uint index = randomness % currentRound().tickets.length;
+        // payWinner(index);
         isPickingWinner = false;
     }
 
@@ -55,9 +70,23 @@ contract Dhakon is VRFConsumerBase {
         return uint(keccak256(abi.encodePacked(owner, block.timestamp)));
     }
 
-    function getWinnerByRound(uint round) public view returns (playerTicket memory) {
-        require(round <= winners.length, "There is no such round");
-        return winners[round-1];
+    function initGameRound() internal {
+        require(! gameRounds[roundNum].exist, "Game Round already exists");
+
+        gameRounds[roundNum] = GameRound();
+    }
+
+    // function getRoundInfo(uint _round) public view returns (GameRound storage) {
+    //     return gameRounds[_round];
+    // }
+
+    function currentRound() internal view returns (GameRound storage) {
+        return gameRounds[roundNum];
+    }
+
+/*
+    function getWinner() public view returns (playerTicket memory) {
+        return currentRound().winner;
     }
 
     function getBalance() public view returns (uint) {
@@ -65,36 +94,36 @@ contract Dhakon is VRFConsumerBase {
     }
 
     function getPlayers() public view returns (address[] memory) {
-        return players;
+        return currentRound().players;
     }
 
     function getNumOfPlayers() public view returns (uint) {
-        return players.length;
+        return currentRound().players.length;
     }
 
     function getTickets() public view returns (uint[] memory) {
-        return tickets;
+        return currentRound().tickets;
     }
 
     function getNumOfTickets() public view returns(uint) {
-        return tickets.length;
+        return currentRound().tickets.length;
     }
 
     function addPlayers(address playerAddr) internal {
-        if (checkPlayers[playerAddr] != true) {  // only add if player's address not yet exist
-            checkPlayers[playerAddr] = true;
-            players.push(playerAddr);
+        if (! gameRounds[roundNum].checkPlayers[playerAddr]) {  // only add if player's address not exist yet
+            gameRounds[roundNum].checkPlayers[playerAddr] = true;
+            gameRounds[roundNum].players.push(playerAddr);
         }
     }
 
     function enter() public payable {
-        require(msg.value > .01 ether);
+        require(msg.value >= ticketPrice);
 
         // save new ticket entering the round
         uint ticket = generateTicket();
         address payable player = payable(msg.sender);
-        tickets.push(ticket);
-        playerTickets[ticket] = player;
+        gameRounds[roundNum].tickets.push(ticket);
+        gameRounds[roundNum].playerTickets[ticket] = player;
 
         addPlayers(player);
     }
@@ -106,29 +135,15 @@ contract Dhakon is VRFConsumerBase {
     }
 
     function payWinner(uint ticketIdx) internal {
-        uint ticketNum = tickets[ticketIdx];
-        playerTickets[ticketNum].transfer(address(this).balance);
+        uint ticketNum = currentRound().tickets[ticketIdx];
+        currentRound().playerTickets[ticketNum].transfer(address(this).balance);
 
-        winners.push(playerTicket(
-            ticketNum, 
-            playerTickets[ticketNum]
-        ));
+        gameRounds[roundNum].winner = playerTicket(ticketNum, currentRound().playerTickets[ticketNum]);
         
-        // reset the state of the contract
-        resetRound();
-    }
-
-    function resetRound() internal {        
-        for(uint i=0;i<players.length;i++) {
-            delete checkPlayers[players[i]]; 
-        }
-        players = new address payable[](0);
-
-        for(uint i=0;i<tickets.length;i++) {
-            delete playerTickets[tickets[i]];
-        }
-        tickets = new uint[](0);
-    }
+        // start a NEW Game Round
+        roundNum++;
+        // initGameRound();
+    } */
 
     function withdrawLINKToken() external onlyowner {
         uint balance = LINK.balanceOf(address(this));
