@@ -22,6 +22,6 @@ contract MockDhakon is Dhakon {
 
     function getRandomNumber() internal override returns(bytes32 requestId) {
         requestId = "1";
-        fulfillRandomness(requestId, 1000000);
+        fulfillRandomness(requestId, 2);
     }
 } 
