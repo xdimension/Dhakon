@@ -44,9 +44,12 @@ module.exports = {
     // options below to some value.
     //
     development: {
-     host: "127.0.0.1",     // Localhost (default: none)
-     port: 7545,            // Standard Ethereum port (default: none)
-     network_id: "*",       // Any network (default: none)
+      host: "127.0.0.1",     // Localhost (default: none)
+      port: 7545,            // Standard Ethereum port (default: none)
+      network_id: "*",       // Any network (default: none)
+      gas: 5500000,         // Gas sent with each transaction (default: ~6700000)
+      gasPrice: 20000000000,  // 20 gwei (in wei) (default: 100 gwei)
+      timeoutBlocks: 200,     // # of blocks before a deployment times out  (minimum/default: 50)
     },
     //
     // An additional network, but with some advanced options…
