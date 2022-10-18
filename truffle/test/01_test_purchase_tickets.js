@@ -5,15 +5,13 @@ const Dhakon = artifacts.require("Dhakon");
  */
 contract("Dhakon", (accounts) => {
 
-  /*
   it("should return contract's balance", async() => {
     const dhakon = await Dhakon.deployed();
     const bal = await web3.eth.getBalance(dhakon.address);
-    const bal1 = await dhakon.getBalance();
-    // console.log(bal, bal1.toNumber());
-    return assert.equal(bal, bal1, "Contract's balance is not correct");
-  });
-  */
+    
+    console.log("INITIAL BALANCE: ", bal);
+    assert.equal(bal.toString(), "0", "Contract balance should be 0")
+  })
 
   it("should keep FIRST player's address when buying a ticket", async() => {
     const dhakon = await Dhakon.deployed();
@@ -43,11 +41,13 @@ contract("Dhakon", (accounts) => {
     assert.equal(player, accounts[1], "Player's address is not correct");
   })
 
-  it("should have correct balance", async() => {
+  it("should have the correct balance", async() => {
     const dhakon = await Dhakon.deployed();
+    const bal = await web3.eth.getBalance(dhakon.address);
+    const bal1 = await dhakon.getBalance();
 
-    let balance = await dhakon.getBalance();
-
-    assert.equal(balance.toString(), (0.22 * 10 ** 18).toString());
+    assert.equal(bal, bal1, "Func getBalance didn't return correct balance");
+    assert.equal(bal.toString(), (0.22 * 10 ** 18).toString(), "Contract balance is not correct");
+    console.log("CURRENT BALANCE: ", web3.utils.fromWei(bal1, "ether"));
   })
 });
