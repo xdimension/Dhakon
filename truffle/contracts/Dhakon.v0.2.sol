@@ -59,9 +59,9 @@ contract Dhakon is VRFConsumerBase {
         return uint(keccak256(abi.encodePacked(owner, block.timestamp)));
     }
 
-    function getWinnerByRound(uint round) public view returns (playerTicket memory) {
-        require(round <= winners.length, "There is no such round");
-        return winners[round-1];
+    function getWinnerByRound(uint _round) public view returns (playerTicket memory) {
+        require(_round <= winners.length, "There is no such round");
+        return winners[_round-1];
     }
 
     function getBalance() public view returns (uint) {
@@ -74,10 +74,6 @@ contract Dhakon is VRFConsumerBase {
 
     function getNumOfPlayers() public view returns (uint) {
         return players.length;
-    }
-
-    function getTickets() public view returns (uint[] memory) {
-        return tickets;
     }
 
     function getNumOfTickets() public view returns(uint) {
@@ -104,8 +100,10 @@ contract Dhakon is VRFConsumerBase {
     }
 
     function pickWinner() public onlyowner {
+        require(tickets.length > 0, "There is no tickets yet");        
         require(!isPickingWinner);
         isPickingWinner = true;
+        
         getRandomNumber();
     }
 
