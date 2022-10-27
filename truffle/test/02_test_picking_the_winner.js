@@ -92,6 +92,8 @@ contract("MockDhakon", async(accounts) => {
   it("should have been cleaned up", async() => {
     const dhakon = await MockDhakon.deployed();
 
+    await dhakon.payWinner();
+
     let countPlayers = await dhakon.getNumOfPlayers();
     let countTickets = await dhakon.getNumOfTickets();
 
