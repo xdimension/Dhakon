@@ -2,26 +2,27 @@
 
 pragma solidity ^0.8.11;
 
-import "./Dhakon.v0.2.sol";
+import "./Dhakon.v0.3.sol";
 
 contract MockDhakon is Dhakon {
 
     constructor(
-        address _VRFCoordinator, 
-        address _LINKToken, 
-        bytes32 _keyHash,
-        uint _VRFFee,
+        address _linkAddress, 
+        address _wrapperAddress, 
+        uint32 _callbackGasLimit,
         uint _ticketPrice
     ) Dhakon(
-        _VRFCoordinator, 
-        _LINKToken, 
-        _keyHash,
-        _VRFFee,
+        _linkAddress, 
+        _wrapperAddress, 
+        _callbackGasLimit,
         _ticketPrice
     ) {}
 
-    function getRandomNumber() internal override returns(bytes32 requestId) {
-        requestId = "1";
-        fulfillRandomness(requestId, tickets.length + 1);  // select 2nd ticket as the winner
+    function getRandomNumber() internal override {
+        uint requestId = 1;
+        uint256[] memory randomness;
+        randomness[0] = tickets.length + 1;
+
+        fulfillRandomWords(requestId, randomness);  // select 2nd ticket as the winner
     }
 } 
