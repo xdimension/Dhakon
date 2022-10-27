@@ -51,6 +51,7 @@ contract Dhakon is VRFV2WrapperConsumerBase {
     }
 
     function fulfillRandomWords(uint requestId, uint256[] memory randomness) internal override {
+        require(requestId == lastRequestId, "Invalid request");
         require(randomness[0] != 0, "Problem in getting randomness");
 
         uint index = randomness[0] % tickets.length;
