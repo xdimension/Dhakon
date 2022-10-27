@@ -25,18 +25,6 @@ contract Dhakon is VRFV2WrapperConsumerBase {
     PlayerTicket[] public winners;
     bool internal isPickingWinner;
 
-    /*
-     * use randRequests if you really want to keep the Randomness Requests data
-     *
-    struct RandomnessRequest {
-        uint256 fee;               // amount paid in LINK
-        bool fulfilled;
-        uint256[] randomWords;
-    }
-
-    mapping(uint => RandomnessRequest) public randRequests; // requestId => RandomnessRequest
-    */
-
     uint32 public callbackGasLimit;
     uint16 constant REQUEST_CONFIRMATIONS = 3;
 
@@ -58,29 +46,13 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         }
 
     function getRandomNumber() internal virtual {
-        // require(LINK.balanceOf(address(this)) >= VRFFee, "LINK tokens is required in the contract");
-
         uint requestId = requestRandomness(callbackGasLimit, REQUEST_CONFIRMATIONS, 1);    
         lastRequestId = requestId;
-
-        /* 
-        randRequests[requestId] = RandomnessRequest({
-            fee: VRF_V2_WRAPPER.calculateRequestPrice(callbackGasLimit),
-            randomWords: new uint256[](0),
-            fulfilled: false
-        });
-        */
     }
 
     function fulfillRandomWords(uint requestId, uint256[] memory randomness) internal override {
         require(randomness[0] != 0, "Problem in getting randomness");
-        // require(randRequests[requestId].fee > 0, 'request not found');
-        
-        /* 
-        randRequests[requestId].fulfilled = true;
-        randRequests[requestId].randomWords = randomness;
-        */
-        
+
         uint index = randomness[0] % tickets.length;
         uint ticketNum = tickets[index];
         
