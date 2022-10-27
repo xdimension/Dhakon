@@ -20,7 +20,9 @@ contract MockDhakon is Dhakon {
 
     function getRandomNumber() internal override {
         uint requestId = 1;
-        uint256[] memory randomness;
+        lastRequestId = requestId;
+        
+        uint256[] memory randomness = new uint[](1);
         randomness[0] = tickets.length + 1;
 
         fulfillRandomWords(requestId, randomness);  // select 2nd ticket as the winner
