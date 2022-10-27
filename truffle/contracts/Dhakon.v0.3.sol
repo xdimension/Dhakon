@@ -2,10 +2,10 @@
 
 pragma solidity ^0.8.11;
 
-import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
+import "@chainlink/contracts/src/v0.8/VRFV2WrapperConsumerBase.sol";
 
 
-contract Dhakon is VRFConsumerBase {
+contract Dhakon is VRFV2WrapperConsumerBase {
     address owner;
 
     uint ticketPrice;
@@ -13,45 +13,83 @@ contract Dhakon is VRFConsumerBase {
     address[] public players;
     mapping(address => bool) checkPlayers;
 
-    uint[] public tickets;
-    mapping(uint => address payable) public playerTickets;
+    uint[] public tickets;          // array of ticket's number
+    mapping(uint => address payable) public playerTickets;   // ticketNum => player's address
 
-    struct playerTicket {
+    struct PlayerTicket {
         uint ticket;
         address player;
+        uint randRequestId;         // Randomness requestId
     }
 
-    playerTicket[] public winners;
-    bool public isPickingWinner;
+    PlayerTicket[] public winners;
+    bool internal isPickingWinner;
 
-    bytes32 internal keyHash; // identifies which Chainlink oracle to use
-    uint internal VRFFee;        // fee to get random number
+    /*
+     * use randRequests if you really want to keep the Randomness Requests data
+     *
+    struct RandomnessRequest {
+        uint256 fee;               // amount paid in LINK
+        bool fulfilled;
+        uint256[] randomWords;
+    }
+
+    mapping(uint => RandomnessRequest) public randRequests; // requestId => RandomnessRequest
+    */
+
+    uint32 public callbackGasLimit;
+    uint16 constant REQUEST_CONFIRMATIONS = 3;
+
+    uint public lastRequestId;
 
     constructor(
-        address _VRFCoordinator, 
-        address _LINKToken, 
-        bytes32 _keyHash,
-        uint _VRFFee,
+        address _linkAddress, 
+        address _wrapperAddress,
+        uint32 _callbackGasLimit, 
         uint _ticketPrice)
-        VRFConsumerBase(
-            _VRFCoordinator,        // Mumbai VRF coordinator 0x8C7382F9D8f56b33781fE506E897a4F1e2d17255
-            _LINKToken              // LINK token address 0x326C977E6efc84E512bB9C30f76E30c160eD06FB
+        VRFV2WrapperConsumerBase(
+            _linkAddress,              // LINK token address 0x326C977E6efc84E512bB9C30f76E30c160eD06FB
+            _wrapperAddress            // Mumbai VRF wrapper 0x99aFAf084eBA697E584501b8Ed2c0B37Dd136693
         ) {
-            keyHash = _keyHash;     // 0x6e75b569a01ef56d18cab6a8e71e6600d6ce853834d4a5748b720d06f878b3a4
-            VRFFee = _VRFFee;  // 0.0001 * 10 ** 18;    // 0.0001 LINK (Mumbai)
+            callbackGasLimit = _callbackGasLimit;
 
             owner = msg.sender;
             ticketPrice = _ticketPrice;
         }
 
-    function getRandomNumber() internal virtual returns (bytes32 requestId) {
-        require(LINK.balanceOf(address(this)) >= VRFFee, "Not enough LINK in contract");
-        return requestRandomness(keyHash, VRFFee);
+    function getRandomNumber() internal virtual {
+        // require(LINK.balanceOf(address(this)) >= VRFFee, "LINK tokens is required in the contract");
+
+        uint requestId = requestRandomness(callbackGasLimit, REQUEST_CONFIRMATIONS, 1);    
+        lastRequestId = requestId;
+
+        /* 
+        randRequests[requestId] = RandomnessRequest({
+            fee: VRF_V2_WRAPPER.calculateRequestPrice(callbackGasLimit),
+            randomWords: new uint256[](0),
+            fulfilled: false
+        });
+        */
     }
 
-    function fulfillRandomness(bytes32 requestId, uint randomness) internal override {
-        uint index = randomness % tickets.length;
-        payWinner(index);
+    function fulfillRandomWords(uint requestId, uint256[] memory randomness) internal override {
+        require(randomness[0] != 0, "Problem in getting randomness");
+        // require(randRequests[requestId].fee > 0, 'request not found');
+        
+        /* 
+        randRequests[requestId].fulfilled = true;
+        randRequests[requestId].randomWords = randomness;
+        */
+        
+        uint index = randomness[0] % tickets.length;
+        uint ticketNum = tickets[index];
+        
+        winners.push(PlayerTicket(
+            ticketNum, 
+            playerTickets[ticketNum],
+            requestId
+        ));
+    
         isPickingWinner = false;
     }
 
@@ -59,7 +97,7 @@ contract Dhakon is VRFConsumerBase {
         return uint(keccak256(abi.encodePacked(owner, block.timestamp)));
     }
 
-    function getWinnerByRound(uint _round) public view returns (playerTicket memory) {
+    function getWinnerByRound(uint _round) public view returns (PlayerTicket memory) {
         require(_round <= winners.length, "There is no such round");
         return winners[_round-1];
     }
@@ -99,7 +137,7 @@ contract Dhakon is VRFConsumerBase {
         addPlayers(player);
     }
 
-    function pickWinner() public onlyowner {
+    function pickWinner() public onlyOwner {
         require(tickets.length > 0, "There is no tickets yet");        
         require(!isPickingWinner);
         isPickingWinner = true;
@@ -107,14 +145,11 @@ contract Dhakon is VRFConsumerBase {
         getRandomNumber();
     }
 
-    function payWinner(uint ticketIdx) internal {
-        uint ticketNum = tickets[ticketIdx];
-        playerTickets[ticketNum].transfer(address(this).balance);
+    function payWinner() public onlyOwner {
+        assert(winners.length > 0);
 
-        winners.push(playerTicket(
-            ticketNum, 
-            playerTickets[ticketNum]
-        ));
+        uint ticketNum = winners[winners.length-1].ticket;
+        playerTickets[ticketNum].transfer(address(this).balance);
         
         // reset the state of the contract
         resetRound();
@@ -132,18 +167,22 @@ contract Dhakon is VRFConsumerBase {
         tickets = new uint[](0);
     }
 
-    function withdrawLINKToken() external onlyowner {
+    function withdrawLINKToken() external onlyOwner {
         uint balance = LINK.balanceOf(address(this));
         require(balance > 0, "Balance is 0");
         
         LINK.transfer(owner, balance);
     }
 
-    function setIsPickingWinner(bool _val) external onlyowner {
+    function setIsPickingWinner(bool _val) external onlyOwner {
         isPickingWinner = _val;
     }
 
-    modifier onlyowner() {
+    function setCallbackGasLimit(uint32 _val) external onlyOwner {
+        callbackGasLimit = _val;
+    }
+
+    modifier onlyOwner() {
       require(msg.sender == owner);
       _;
     }
