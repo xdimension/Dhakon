@@ -13,8 +13,8 @@ contract Dhakon is VRFV2WrapperConsumerBase {
     address[] public players;
     mapping(address => bool) checkPlayers;
 
-    uint[] public tickets;          // array of ticket's number
-    mapping(uint => address payable) public playerTickets;   // ticketNum => player's address
+    uint[] public tickets;          // array of ticket numbers
+    mapping(uint => address payable) public playerTickets;   // ticket number => player's address
 
     struct PlayerTicket {
         uint ticket;
