@@ -24,8 +24,9 @@ contract Dhakon is VRFV2WrapperConsumerBase {
 
     PlayerTicket[] public winners;
     bool internal isPickingWinner;
+    uint public currentRound = 0;
 
-    uint32 public callbackGasLimit;
+    uint32 internal callbackGasLimit;
     uint16 constant REQUEST_CONFIRMATIONS = 3;
 
     uint public lastRequestId;
@@ -119,10 +120,14 @@ contract Dhakon is VRFV2WrapperConsumerBase {
     }
 
     function payWinner() public onlyOwner {
-        assert(winners.length > 0);
+        assert(winners.length > currentRound);
 
-        uint ticketNum = winners[winners.length-1].ticket;
-        playerTickets[ticketNum].transfer(address(this).balance);
+        uint balance = address(this).balance;
+        assert(balance > 0);
+
+        currentRound++;
+        uint ticketNum = winners[currentRound-1].ticket;
+        playerTickets[ticketNum].transfer(balance);
         
         // reset the state of the contract
         resetRound();
@@ -149,6 +154,10 @@ contract Dhakon is VRFV2WrapperConsumerBase {
 
     function setIsPickingWinner(bool _val) external onlyOwner {
         isPickingWinner = _val;
+    }
+
+    function getCallbackGasLimit() external view returns(uint32) {
+        return callbackGasLimit;
     }
 
     function setCallbackGasLimit(uint32 _val) external onlyOwner {
