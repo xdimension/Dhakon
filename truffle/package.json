@@ -13,5 +13,8 @@
     "test": "truffle test"
   },
   "author": "",
-  "license": "Commercial"
+  "license": "Commercial",
+  "devDependencies": {
+    "ganache-cli": "^6.12.2"
+  }
 }
