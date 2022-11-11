@@ -16,14 +16,14 @@ contract Dhakon is VRFV2WrapperConsumerBase {
     uint[] public tickets;          // array of ticket numbers
     mapping(uint => address payable) public playerTickets;   // ticket number => player's address
 
-    struct PlayerTicket {
+    struct Winner {
         uint ticket;
         address player;
         uint randRequestId;         // Randomness requestId
         uint paidAt;
     }
 
-    PlayerTicket[] public winners;
+    Winner[] public winners;
     bool internal isPickingWinner;
     uint public currentRound = 0;
     bool public isPausing;  // not accepting players when pausing
@@ -60,7 +60,7 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         uint index = randomness[0] % tickets.length;
         uint ticketNum = tickets[index];
         
-        winners.push(PlayerTicket(
+        winners.push(Winner(
             ticketNum, 
             playerTickets[ticketNum],
             requestId,
@@ -74,7 +74,7 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         return uint(keccak256(abi.encodePacked(owner, block.timestamp)));
     }
 
-    function getWinnerByRound(uint _round) public view returns (PlayerTicket memory) {
+    function getWinnerByRound(uint _round) public view returns (Winner memory) {
         require(_round <= winners.length, "There is no such round");
         return winners[_round-1];
     }
