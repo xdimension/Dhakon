@@ -1,15 +1,36 @@
-# React client
+# Personal Portfolio Website in React
 
-This project is bootstraped with [Create React App](https://create-react-app.dev). It is unopinionated with only `web3.js` as an added dependency, so nothing stands in your way.
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Getting started
+<img width="1266" alt="Screen Shot 2022-06-19 at 2 18 18 PM" src="https://user-images.githubusercontent.com/50160672/174933373-1ba6cadf-1c9a-48c3-aa58-984d0bd62d82.png">
 
-Run `npm start` to start the dev server.
+Built using:
 
-See all [available scripts](https://create-react-app.dev/docs/available-scripts).
+- Front-end library: React
+- CSS framework: React-bootstrap
+- CSS animations library: Animate.css
 
-## Note on `react-scripts` version
+In the /personal-portfolio, you can run:
 
-The installed version of `react-scripts` is 4.x instead of the latest 5.x, which uses Webpack 5. This is because Webpack 5 no longer auto-polyfills Node.js core modules, which `web3.js` depends on.
+### `npm start`
 
-If you don't want to use `react-scripts` at 4.x, alternative solutions include [`eject`](https://create-react-app.dev/docs/available-scripts/#npm-run-eject) and [`react-app-rewired`](https://github.com/timarney/react-app-rewired) (See [instruction](https://github.com/ChainSafe/web3.js#web3-and-create-react-app)).
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+
+The page will reload when you make changes.\
+You may also see any lint errors in the console.
+
+### `npm test`
+
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+
+### `npm run build`
+
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
+
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
+
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
