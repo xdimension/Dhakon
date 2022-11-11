@@ -83,16 +83,20 @@ contract("MockDhakon", async(accounts) => {
 
     await dhakon.pickWinner();
 
-    let playerTicket = await dhakon.getWinnerByRound(1);
+    let winner = await dhakon.getWinnerByRound(1);
 
-    assert.equal(playerTicket.ticket, winningTicket, "Winning ticket is not correct");
-    assert.equal(playerTicket.player, winningPlayer, "Winning player is not correct");
+    assert.equal(winner.ticket, winningTicket, "Winning ticket is not correct");
+    assert.equal(winner.player, winningPlayer, "Winning player is not correct");
   })
 
-  it("should have been cleaned up", async() => {
+  it("should be able to pay the winner", async() => {
     const dhakon = await MockDhakon.deployed();
 
     await dhakon.payWinner();
+
+    let winner = await dhakon.getWinnerByRound(1);
+
+    assert.notEqual(winner.paidAt, "0", "Player's paid time has not been updated");
 
     let countPlayers = await dhakon.getNumOfPlayers();
     let countTickets = await dhakon.getNumOfTickets();
