@@ -103,6 +103,7 @@ contract Dhakon is VRFV2WrapperConsumerBase {
     }
 
     function enter() public payable {
+        require(!isPausing, "The round is not in playing mode");
         require(msg.value >= ticketPrice, "Value is below Ticket Price");
 
         // save new ticket entering the round
