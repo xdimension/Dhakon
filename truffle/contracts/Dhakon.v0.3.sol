@@ -20,11 +20,13 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         uint ticket;
         address player;
         uint randRequestId;         // Randomness requestId
+        uint paidAt;
     }
 
     PlayerTicket[] public winners;
     bool internal isPickingWinner;
     uint public currentRound = 0;
+    bool public isPausing;  // not accepting players when pausing
 
     uint32 internal callbackGasLimit;
     uint16 constant REQUEST_CONFIRMATIONS = 3;
@@ -61,7 +63,8 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         winners.push(PlayerTicket(
             ticketNum, 
             playerTickets[ticketNum],
-            requestId
+            requestId,
+            0
         ));
     
         isPickingWinner = false;
@@ -114,19 +117,23 @@ contract Dhakon is VRFV2WrapperConsumerBase {
     function pickWinner() public onlyOwner {
         require(tickets.length > 0, "There is no tickets yet");        
         require(!isPickingWinner);
+        require(winners.length <= currentRound, "The winner has been selected");
         isPickingWinner = true;
+        isPausing = true;
         
         getRandomNumber();
     }
 
     function payWinner() public onlyOwner {
-        assert(winners.length > currentRound);
+        require(winners.length > currentRound, "The winner hasn't been selected");  
 
         uint balance = address(this).balance;
-        assert(balance > 0);
+        require(balance > 0, "There is no pot");
 
+        uint ticketNum = winners[currentRound].ticket;
+        winners[currentRound].paidAt = block.timestamp;
         currentRound++;
-        uint ticketNum = winners[currentRound-1].ticket;
+
         playerTickets[ticketNum].transfer(balance);
         
         // reset the state of the contract
@@ -143,17 +150,23 @@ contract Dhakon is VRFV2WrapperConsumerBase {
             delete playerTickets[tickets[i]];
         }
         tickets = new uint[](0);
+
+        isPausing = false;
     }
 
     function withdrawLINKToken() external onlyOwner {
         uint balance = LINK.balanceOf(address(this));
-        require(balance > 0, "Balance is 0");
+        require(balance > 0, "LINK Balance is 0");
         
         LINK.transfer(owner, balance);
     }
 
     function setIsPickingWinner(bool _val) external onlyOwner {
         isPickingWinner = _val;
+    }
+
+    function setIsPausing(bool _val) external onlyOwner {
+        isPausing = _val;
     }
 
     function getCallbackGasLimit() external view returns(uint32) {
