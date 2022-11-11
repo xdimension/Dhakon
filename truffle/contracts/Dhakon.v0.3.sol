@@ -33,6 +33,10 @@ contract Dhakon is VRFV2WrapperConsumerBase {
 
     uint public lastRequestId;
 
+    event NewPlayerEntered(uint indexed ticket, address indexed player);
+    event WinnerChosen(uint indexed ticket, address player);
+    event WinnerPaid(uint indexed ticket, address player, uint paidAt);
+
     constructor(
         address _linkAddress, 
         address _wrapperAddress,
@@ -59,14 +63,16 @@ contract Dhakon is VRFV2WrapperConsumerBase {
 
         uint index = randomness[0] % tickets.length;
         uint ticketNum = tickets[index];
-        
-        winners.push(Winner(
+        Winner memory winner = Winner(
             ticketNum, 
             playerTickets[ticketNum],
             requestId,
             0
-        ));
-    
+        );
+
+        winners.push(winner);
+        emit WinnerChosen(winner.ticket, winner.player);
+
         isPickingWinner = false;
     }
 
@@ -113,6 +119,8 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         playerTickets[ticket] = player;
 
         addPlayers(player);
+
+        emit NewPlayerEntered(ticket, player);
     }
 
     function pickWinner() public onlyOwner {
@@ -132,10 +140,14 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         require(balance > 0, "There is no pot");
 
         uint ticketNum = winners[currentRound].ticket;
-        winners[currentRound].paidAt = block.timestamp;
+        address payable player = playerTickets[ticketNum];
+        uint paidAt = block.timestamp;
+        winners[currentRound].paidAt = paidAt;
         currentRound++;
 
-        playerTickets[ticketNum].transfer(balance);
+        player.transfer(balance);
+
+        emit WinnerPaid(ticketNum, player, paidAt);
         
         // reset the state of the contract
         resetRound();
