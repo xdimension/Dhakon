@@ -74,8 +74,24 @@ contract("MockDhakon", async(accounts) => {
     console.log("CURRENT BALANCE: ", web3.utils.fromWei(bal1, "ether"));
   })
 
+  it("should check the round period", async() => {
+    const dhakon = await MockDhakon.deployed();
+    
+    let errMsg = null
+    try {
+      await dhakon.pickWinner();
+    } catch (err) {
+      errMsg = err.reason;
+    }
+
+    assert.equal(errMsg, "The round has not ended yet", "Round period was not checked")
+  })
+
   it("should be able to pick the winner", async() => {
     const dhakon = await MockDhakon.deployed();
+
+    // set the round to end now
+    await dhakon.setRoundEndsAt(Math.floor(new Date().getTime() / 1000));
 
     // let's become God who determines the future
     let winningTicket = await dhakon.tickets(1);
