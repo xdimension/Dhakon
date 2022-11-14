@@ -10,12 +10,14 @@ contract MockDhakon is Dhakon {
         address _linkAddress, 
         address _wrapperAddress, 
         uint32 _callbackGasLimit,
-        uint _ticketPrice
+        uint _ticketPrice,
+        uint16 _roundDays
     ) Dhakon(
         _linkAddress, 
         _wrapperAddress, 
         _callbackGasLimit,
-        _ticketPrice
+        _ticketPrice,
+        _roundDays
     ) {}
 
     function getRandomNumber() internal override {

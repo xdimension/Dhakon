@@ -8,7 +8,8 @@ import "@chainlink/contracts/src/v0.8/VRFV2WrapperConsumerBase.sol";
 contract Dhakon is VRFV2WrapperConsumerBase {
     address owner;
 
-    uint ticketPrice;
+    uint immutable public ticketPrice;
+    uint16 immutable public roundDays;
 
     address[] public players;
     mapping(address => bool) checkPlayers;
@@ -24,9 +25,11 @@ contract Dhakon is VRFV2WrapperConsumerBase {
     }
 
     Winner[] public winners;
+    
     bool internal isPickingWinner;
-    uint public currentRound = 0;
     bool public isPausing;  // not accepting players when pausing
+    uint32 public currentRound = 0;
+    uint public roundEndsAt;
 
     uint32 internal callbackGasLimit;
     uint16 constant REQUEST_CONFIRMATIONS = 3;
@@ -34,6 +37,7 @@ contract Dhakon is VRFV2WrapperConsumerBase {
     uint public lastRequestId;
 
     event NewPlayerEntered(uint indexed ticket, address indexed player);
+    event RoundStarted(uint32 indexed round, uint roundEndsAt);
     event WinnerChosen(uint indexed ticket, address player);
     event WinnerPaid(uint indexed ticket, address player, uint paidAt);
 
@@ -41,7 +45,8 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         address _linkAddress, 
         address _wrapperAddress,
         uint32 _callbackGasLimit, 
-        uint _ticketPrice)
+        uint _ticketPrice,
+        uint16 _roundDays)
         VRFV2WrapperConsumerBase(
             _linkAddress,              // LINK token address 0x326C977E6efc84E512bB9C30f76E30c160eD06FB
             _wrapperAddress            // Mumbai VRF wrapper 0x99aFAf084eBA697E584501b8Ed2c0B37Dd136693
@@ -50,6 +55,7 @@ contract Dhakon is VRFV2WrapperConsumerBase {
 
             owner = msg.sender;
             ticketPrice = _ticketPrice;
+            roundDays = _roundDays;
         }
 
     function getRandomNumber() internal virtual {
@@ -81,6 +87,9 @@ contract Dhakon is VRFV2WrapperConsumerBase {
     }
 
     function getWinnerByRound(uint _round) public view returns (Winner memory) {
+        if (_round == 0) {
+            _round = currentRound + 1;
+        }
         require(_round <= winners.length, "There is no such round");
         return winners[_round-1];
     }
@@ -119,14 +128,21 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         playerTickets[ticket] = player;
 
         addPlayers(player);
-
         emit NewPlayerEntered(ticket, player);
+
+        // start the round when first ticket is added
+        if (tickets.length == 1) {
+            roundEndsAt = block.timestamp + (roundDays * 1 days);
+            emit RoundStarted(currentRound + 1, roundEndsAt);
+        }
     }
 
     function pickWinner() public onlyOwner {
-        require(tickets.length > 0, "There is no tickets yet");        
         require(!isPickingWinner);
+        require(roundEndsAt <= block.timestamp, "The round has not ended yet");
+        require(tickets.length > 0, "There is no tickets yet");        
         require(winners.length <= currentRound, "The winner has been selected");
+
         isPickingWinner = true;
         isPausing = true;
         
@@ -180,6 +196,10 @@ contract Dhakon is VRFV2WrapperConsumerBase {
 
     function setIsPausing(bool _val) external onlyOwner {
         isPausing = _val;
+    }
+
+    function setRoundEndsAt(uint _timestamp) external onlyOwner {
+        roundEndsAt = _timestamp;
     }
 
     function getCallbackGasLimit() external view returns(uint32) {
