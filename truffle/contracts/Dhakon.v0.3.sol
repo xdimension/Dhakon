@@ -10,12 +10,13 @@ contract Dhakon is VRFV2WrapperConsumerBase {
 
     uint immutable public ticketPrice;
     uint16 immutable public roundDays;
+    uint16 immutable public commissionPct;
 
     address[] public players;
     mapping(address => bool) checkPlayers;
 
     uint[] public tickets;          // array of ticket numbers
-    mapping(uint => address payable) public playerTickets;   // ticket number => player's address
+    mapping(uint => address) public playerTickets;   // ticket number => player's address
 
     struct Winner {
         uint ticket;
@@ -46,17 +47,20 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         address _wrapperAddress,
         uint32 _callbackGasLimit, 
         uint _ticketPrice,
-        uint16 _roundDays)
-        VRFV2WrapperConsumerBase(
-            _linkAddress,              // LINK token address 0x326C977E6efc84E512bB9C30f76E30c160eD06FB
-            _wrapperAddress            // Mumbai VRF wrapper 0x99aFAf084eBA697E584501b8Ed2c0B37Dd136693
-        ) {
-            callbackGasLimit = _callbackGasLimit;
+        uint16 _roundDays,
+        uint16 _commissionPct
+    )
+    VRFV2WrapperConsumerBase(
+        _linkAddress,              // LINK token address 0x326C977E6efc84E512bB9C30f76E30c160eD06FB
+        _wrapperAddress            // Mumbai VRF wrapper 0x99aFAf084eBA697E584501b8Ed2c0B37Dd136693
+    ) {
+        callbackGasLimit = _callbackGasLimit;
 
-            owner = msg.sender;
-            ticketPrice = _ticketPrice;
-            roundDays = _roundDays;
-        }
+        owner = msg.sender;
+        ticketPrice = _ticketPrice;
+        roundDays = _roundDays;
+        commissionPct = _commissionPct;
+    }
 
     function getRandomNumber() internal virtual {
         uint requestId = requestRandomness(callbackGasLimit, REQUEST_CONFIRMATIONS, 1);    
@@ -153,15 +157,20 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         require(winners.length > currentRound, "The winner hasn't been selected");  
 
         uint balance = address(this).balance;
-        require(balance > 0, "There is no pot");
+        require(balance > 0, "The pot is empty");
 
         uint ticketNum = winners[currentRound].ticket;
-        address payable player = playerTickets[ticketNum];
+        address payable player = payable(playerTickets[ticketNum]);
+        address payable holder = payable(owner);
         uint paidAt = block.timestamp;
         winners[currentRound].paidAt = paidAt;
         currentRound++;
 
-        player.transfer(balance);
+        uint commissionAmt = commissionPct * balance / 10000;
+        uint playerPrize = balance - commissionAmt;
+
+        player.transfer(playerPrize);
+        holder.transfer(commissionAmt);
 
         emit WinnerPaid(ticketNum, player, paidAt);
         

@@ -7,6 +7,7 @@ module.exports = function (deployer) {
 
   const ticketPrice = 0.1;            // The price of 1 ticket to join
   const roundDays = 30;               // The round period (in days)
+  const commissionPct = 300;           // commissionPct = Commission Percentage * 100 (eg. 1.23% -> 1.23 * 100 = 123)
 
   deployer.deploy(
     MockDhakon, 
@@ -14,6 +15,7 @@ module.exports = function (deployer) {
     "0x99aFAf084eBA697E584501b8Ed2c0B37Dd136693",
     callbackGasPrice,
     BigNumber.from((ticketPrice * 10 ** 18).toString()),
-    roundDays
+    roundDays,
+    commissionPct
   );
 };
