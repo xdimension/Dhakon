@@ -119,7 +119,11 @@ contract("MockDhakon", async(accounts) => {
 
     assert.equal(countPlayers, "0", "Players has not been cleared");
     assert.equal(countTickets, "0", "Tickets has not been cleared");
+  })
 
+  it("balance should be 0", async() => {
+    const dhakon = await MockDhakon.deployed();
+    
     const bal1 = await dhakon.getBalance();
 
     assert.equal(bal1.toString(), "0", "End balance is not 0");
