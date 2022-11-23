@@ -6,29 +6,26 @@ import { Banner } from "./components/Banner";
 import { Stats } from "./components/Stats";
 import { Contact } from "./components/Contact";
 import { Footer } from "./components/Footer";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Web3 from 'web3';
 import contract from './scripts/contract';
+import truncateEthAddress from 'truncate-eth-address'
+
+let web3;
+let vmContract;
+let address = '';
 
 function App() {
   const [error, setError] = useState('')
-  const [address, setAddress] = useState(null)
-  const [vmContract, setVmContract] = useState(null)
-  const [web3, setWeb3] = useState(null)
-  const [balance, setBalance] = useState('')
-  const [balanceDisplayed, setBalanceDisplayed] = useState('')
+  
   const [currentRound, setCurrentRound] = useState(0)
-
-  useEffect(() => {
-    getBalance();
-    getCurrentRound();
-  }, [vmContract, address])
+  const [balance, setBalance] = useState(0)
+  const [displayedAddress, setDisplayedAddress] = useState('')
 
   const getBalance = async () => {
     if (vmContract) {
-      const balance = await vmContract.methods.getBalance().call()
-      setBalance(balance)
-      setBalanceDisplayed(web3.utils.fromWei(balance, 'ether'));
+      let balance = await vmContract.methods.getBalance().call()
+      setBalance(web3.utils.fromWei(balance, 'ether'))
     }
   }
 
@@ -39,6 +36,11 @@ function App() {
     }
   }
 
+  const refreshInfo = async() => {
+    getCurrentRound()
+    getBalance()
+  }
+
   const enterPot = async() => {
     try {
       await vmContract.methods.enter()
@@ -46,6 +48,8 @@ function App() {
               from: address,
               value: web3.utils.toWei('0.1', 'ether')
             })
+
+      refreshInfo()
     } catch(err) {
       console.log(err.message)
     }
@@ -58,6 +62,8 @@ function App() {
             .send({
               from: address
             })
+
+      refreshInfo()
     } catch(err) {
       console.log(err.message)
     }
@@ -70,29 +76,32 @@ function App() {
             .send({
               from: address
             })
+
+      refreshInfo();
     } catch(err) {
       console.log(err.message)
     }
   }
 
-  const connectWalletHandler = async () => {
+  const connectWallet = async () => {
     // check if MetaMask is installed 
     if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
         try {
           // request wallet connect 
           await window.ethereum.request({ method: "eth_requestAccounts" })
           // create web3 instance and set to state var 
-          const web3 = new Web3(window.ethereum)
-          // set web3 instance 
-          setWeb3(web3)
+          web3 = new Web3(window.ethereum)
+
           // get list of accounts 
           const accounts = await web3.eth.getAccounts()
-          // set Account 1 to React state var 
-          setAddress(accounts[0])
+          // keep Account 0 address
+          address = accounts[0]
+          setDisplayedAddress(truncateEthAddress(address))
 
           // create local contract copy 
-          const vm = contract(web3)
-          setVmContract(vm)
+          vmContract = contract(web3)
+
+          refreshInfo()
 
         } catch(err) {
           setError(err.message)
@@ -114,7 +123,8 @@ function App() {
 
         <div style={{marginTop:'20px'}}>
           <button style={{background:'blue',color:'#FFF',padding:'20px'}} 
-            onClick={connectWalletHandler}><span>Connect to Wallet</span>
+            onClick={connectWallet}>
+              <span>{ address ? displayedAddress + " (Switch)" : "Connect to Wallet"}</span>
           </button>
         </div>
 
@@ -129,7 +139,7 @@ function App() {
         </div>
 
         <div style={{marginTop:'20px'}}>
-          Balance: {balanceDisplayed}
+          Balance: {balance}
           <button style={{background:'green',color:'#FFF',marginLeft:'15px',padding:'10px'}} 
           onClick={getBalance}><span>Refresh Balance</span>
         </button>
