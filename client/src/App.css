@@ -300,6 +300,22 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
   border-right: 0.08em solid #666;
 }
 
+/************ Players Css ************/
+.players {
+  padding: 0 0 50px 0;
+  position: relative;
+}
+.players-bx {
+  background: #151515;
+  border-radius: 55px;
+  padding: 50px;
+  margin: 50px 0 80px 0;
+}
+.players-bx h2 {
+  font-size: 1.65em;
+  margin-bottom: 17px;
+}
+
 /************ Stats Css ************/
 .stat {
   padding: 0 0 50px 0;
@@ -307,9 +323,9 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
 }
 .stat-bx {
   background: #151515;
-  border-radius: 64px;
+  border-radius: 55px;
   text-align: center;
-  padding: 60px 50px;
+  padding: 50px;
   margin-top: -60px;
 }
 .stat h2 {
@@ -321,14 +337,12 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
     font-size: 18px;
     letter-spacing: 0.8px;
     line-height: 1.5em;
-    margin: 14px 0 75px 0;
+    margin: 14px 0 40px 0;
 }
-.stat-slider {
-  width: 80%;
-  margin: 0 auto;
-  position: relative;
+.stat .item {
+  padding:20px 10px;
 }
-.stat-slider .item img {
+.stat .item img {
   width: 50%;
   margin: 0 auto 15px auto;
 }
@@ -413,14 +427,7 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
   width: 100%;
 }
 
-/************ Footer Css ************/
-.footer {
-  padding: 30px 0 30px 0;
-  background-image: url('./assets/img/footer-bg.png');
-  background-position: center center;
-  background-size: cover;
-  background-repeat: no-repeat;
-}
+/************ Newsletter Css ************/
 .newsletter-bx {
   background: #FFFFFF;
   border-radius: 55px;
@@ -480,6 +487,15 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
   font-weight: 500;
   letter-spacing: 0.5px;
   border-radius: 18px;
+}
+
+/************ Footer Css ************/
+.footer {
+  padding: 30px 0 30px 0;
+  background-image: url('./assets/img/footer-bg.png');
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 .footer img {
   width: 26%;
