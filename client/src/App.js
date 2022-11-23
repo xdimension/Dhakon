@@ -3,6 +3,7 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { NavBar } from "./components/NavBar";
 import { Banner } from "./components/Banner";
+import { Players } from "./components/Players";
 import { Stats } from "./components/Stats";
 import { Contact } from "./components/Contact";
 import { Footer } from "./components/Footer";
@@ -21,6 +22,8 @@ function App() {
   const [currentRound, setCurrentRound] = useState(0)
   const [balance, setBalance] = useState(0)
   const [displayedAddress, setDisplayedAddress] = useState('')
+  const [players, setPlayers] = useState([])
+  const [winners, setWinners] = useState([])
 
   const getBalance = async () => {
     if (vmContract) {
@@ -36,9 +39,25 @@ function App() {
     }
   }
 
+  const getPlayers = async() => {
+    if (vmContract) {
+      const players = await vmContract.methods.getPlayers().call()
+      setPlayers(players)
+    }
+  }
+
+  const getWinners = async() => {
+    if (vmContract) {
+      const winners = await vmContract.methods.getWinners().call()
+      setWinners(winners)
+    }
+  }
+
   const refreshInfo = async() => {
     getCurrentRound()
     getBalance()
+    getPlayers()
+    getWinners()
   }
 
   const enterPot = async() => {
@@ -160,6 +179,7 @@ function App() {
 
       </div>
 
+      <Players players={players} winners={winners} />
       <Stats />
       <Contact />
       <Footer />
