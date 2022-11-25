@@ -2,6 +2,7 @@ import logo from "./logo.svg"
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css"
 
+import { Row, Col } from "react-bootstrap"
 import { Web3Provider } from "./components/Web3Provider"
 import { NavBar } from "./components/NavBar"
 import { Banner } from "./components/Banner"
@@ -12,6 +13,7 @@ import { PayWinner } from "./components/PayWinner"
 import { GameRound } from "./components/GameRound"
 import { Balance } from "./components/Balance"
 import { Players } from "./components/Players"
+import { Winners } from "./components/Winners"
 import { Stats } from "./components/Stats"
 import { Contact } from "./components/Contact"
 import { Footer } from "./components/Footer"
@@ -54,7 +56,19 @@ function App() {
 
         </div>
 
-        <Players />
+        <section className="players" id="players">
+            <div className="container">
+                <Row>
+                    <Col md={6}>
+                      <Players />
+                    </Col>
+                    <Col md={6}>
+                      <Winners />
+                    </Col>
+                </Row>
+            </div>
+        </section>
+
         <Stats />
         <Contact />
         <Footer />
