@@ -25,6 +25,11 @@ export function Web3Provider({children})
 
                 const vmContract = contract(web3)
                 setVmContract(vmContract)
+
+                // get the account's address
+                const address = (await web3.eth.getAccounts())[0]
+                setAddress(address)    
+
             } catch(err) {
                 console.log(err.message)
             }
@@ -38,18 +43,14 @@ export function Web3Provider({children})
     const refreshInfo = useCallback(() => setRefreshState({}), [])
 
     const greet = async() => { alert('hello') }
-        
-    useEffect(() => {
-        initializeWeb3()
-    }, [])
 
     return (
         <Web3Context.Provider
             value={{
+                initializeWeb3,
                 web3,
                 vmContract,
                 address,
-                setAddress,
                 refreshState,
                 refreshInfo
             }}
