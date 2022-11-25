@@ -1,5 +1,5 @@
 {
-  "name": "Dhakon Backend",
+  "name": "dhakon-backend",
   "version": "1.0.0",
   "description": "Dhakon project",
   "main": "truffle-config.js",
