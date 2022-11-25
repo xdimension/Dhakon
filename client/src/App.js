@@ -1,189 +1,65 @@
-import logo from './logo.svg';
-import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { NavBar } from "./components/NavBar";
-import { Banner } from "./components/Banner";
-import { Players } from "./components/Players";
-import { Stats } from "./components/Stats";
-import { Contact } from "./components/Contact";
-import { Footer } from "./components/Footer";
-import { useState, useEffect, useMemo } from 'react';
-import Web3 from 'web3';
-import contract from './scripts/contract';
-import truncateEthAddress from 'truncate-eth-address'
+import logo from "./logo.svg"
+import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css"
 
-let web3;
-let vmContract;
-let address = '';
+import { Web3Provider } from "./components/Web3Provider"
+import { NavBar } from "./components/NavBar"
+import { Banner } from "./components/Banner"
+import { ConnectWallet } from "./components/ConnectWallet"
+import { EnterPot } from "./components/EnterPot"
+import { PickWinner } from "./components/PickWinner"
+import { PayWinner } from "./components/PayWinner"
+import { GameRound } from "./components/GameRound"
+import { Balance } from "./components/Balance"
+import { Players } from "./components/Players"
+import { Stats } from "./components/Stats"
+import { Contact } from "./components/Contact"
+import { Footer } from "./components/Footer"
 
 function App() {
-  const [error, setError] = useState('')
-  
-  const [currentRound, setCurrentRound] = useState(0)
-  const [balance, setBalance] = useState(0)
-  const [displayedAddress, setDisplayedAddress] = useState('')
-  const [players, setPlayers] = useState([])
-  const [winners, setWinners] = useState([])
-
-  const getBalance = async () => {
-    if (vmContract) {
-      let balance = await vmContract.methods.getBalance().call()
-      setBalance(web3.utils.fromWei(balance, 'ether'))
-    }
-  }
-
-  const getCurrentRound = async() => {
-    if (vmContract) {
-      const round = await vmContract.methods.currentRound().call()
-      setCurrentRound(parseInt(round)+1)
-    }
-  }
-
-  const getPlayers = async() => {
-    if (vmContract) {
-      const players = await vmContract.methods.getPlayers().call()
-      setPlayers(players)
-    }
-  }
-
-  const getWinners = async() => {
-    if (vmContract) {
-      const winners = await vmContract.methods.getWinners().call()
-      setWinners(winners)
-    }
-  }
-
-  const refreshInfo = async() => {
-    getCurrentRound()
-    getBalance()
-    getPlayers()
-    getWinners()
-  }
-
-  const enterPot = async() => {
-    try {
-      await vmContract.methods.enter()
-            .send({
-              from: address,
-              value: web3.utils.toWei('0.1', 'ether')
-            })
-
-      refreshInfo()
-    } catch(err) {
-      console.log(err.message)
-    }
-  }
-
-  const pickWinner = async() => {
-    console.log('picking Winner')
-    try {
-      await vmContract.methods.pickWinner()
-            .send({
-              from: address
-            })
-
-      refreshInfo()
-    } catch(err) {
-      console.log(err.message)
-    }
-  }
-
-  const payWinner = async() => {
-    console.log('paying Winner')
-    try {
-      await vmContract.methods.payWinner()
-            .send({
-              from: address
-            })
-
-      refreshInfo();
-    } catch(err) {
-      console.log(err.message)
-    }
-  }
-
-  const connectWallet = async () => {
-    // check if MetaMask is installed 
-    if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
-        try {
-          // request wallet connect 
-          await window.ethereum.request({ method: "eth_requestAccounts" })
-          // create web3 instance and set to state var 
-          web3 = new Web3(window.ethereum)
-
-          // get list of accounts 
-          const accounts = await web3.eth.getAccounts()
-          // keep Account 0 address
-          address = accounts[0]
-          setDisplayedAddress(truncateEthAddress(address))
-
-          // create local contract copy 
-          vmContract = contract(web3)
-
-          refreshInfo()
-
-        } catch(err) {
-          setError(err.message)
-        }
-    } else {
-        // meta mask is not installed
-        console.log("Please install MetaMask")
-    }
-  }
-  
 
   return (
-    <div className="App">
-      <NavBar />
-      
-      <Banner />
+    <Web3Provider>
+      <div className="App">
+        <NavBar />
+        
+        <Banner />
 
-      <div style={{paddingTop:'50px', paddingBottom:'150px'}}>
+        <div style={{paddingTop:'50px', paddingBottom:'150px'}}>
 
-        <div style={{marginTop:'20px'}}>
-          <button style={{background:'blue',color:'#FFF',padding:'20px'}} 
-            onClick={connectWallet}>
-              <span>{ address ? displayedAddress + " (Switch)" : "Connect to Wallet"}</span>
-          </button>
+          <div style={{marginTop:'20px'}}>
+            <ConnectWallet />
+          </div>
+
+          <div className="mt-2">
+            <GameRound />
+          </div>
+
+          <div className="mt-2">
+            <EnterPot />
+          </div>
+
+          <div style={{marginTop:'20px'}}>
+            <Balance />
+          </div>
+
+
+          <div style={{marginTop:'50px'}}>
+            <PickWinner />
+          </div>
+
+          <div style={{marginTop:'20px'}}>
+            <PayWinner />
+          </div>
+
         </div>
 
-        <div style={{marginTop:'50px'}}>
-          <h2>Round: {currentRound}</h2>
-        </div>
-
-        <div style={{marginTop:'20px'}}>
-          <button style={{background:'red',color:'#FFF',padding:'20px'}} 
-            onClick={enterPot}><span>Join Pot</span>
-          </button>
-        </div>
-
-        <div style={{marginTop:'20px'}}>
-          Balance: {balance}
-          <button style={{background:'green',color:'#FFF',marginLeft:'15px',padding:'10px'}} 
-          onClick={getBalance}><span>Refresh Balance</span>
-        </button>
-        </div>
-
-
-        <div style={{marginTop:'50px'}}>
-          <button style={{background:'orange',color:'#FFF',padding:'20px'}} 
-            onClick={pickWinner}><span>Pick Winner</span>
-          </button>
-        </div>
-
-        <div style={{marginTop:'20px'}}>
-          <button style={{background:'red',color:'#FFF',padding:'20px'}} 
-            onClick={payWinner}><span>Pay Winner</span>
-          </button>
-        </div>
-
+        <Players />
+        <Stats />
+        <Contact />
+        <Footer />
       </div>
-
-      <Players players={players} winners={winners} />
-      <Stats />
-      <Contact />
-      <Footer />
-    </div>
+    </Web3Provider>
   );
 }
 
