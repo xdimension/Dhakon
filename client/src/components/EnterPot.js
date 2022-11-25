@@ -3,7 +3,7 @@ import { Web3Context } from "./Web3Provider"
 
 export function EnterPot() 
 {
-    let { web3, vmContract, address, refreshInfo } = useContext(Web3Context)
+    let { web3, vmContract, address, doRefresh } = useContext(Web3Context)
 
     const enterPotHandler = async() => {
         try {
@@ -13,7 +13,7 @@ export function EnterPot()
                     value: web3.utils.toWei('0.1', 'ether')
                 })
 
-            refreshInfo()
+            doRefresh()
         } catch(err) {
             console.log(err.message)
         }

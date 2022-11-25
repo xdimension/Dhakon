@@ -2,7 +2,7 @@ import { useContext } from "react"
 import { Web3Context } from "./Web3Provider"
 
 export function PickWinner() {
-    let { vmContract, address, refreshInfo } = useContext(Web3Context)
+    let { vmContract, address, doRefresh } = useContext(Web3Context)
 
     const pickWinner = async() => {
         console.log('picking Winner')
@@ -12,7 +12,7 @@ export function PickWinner() {
                     from: address
                 })
 
-            refreshInfo()
+            doRefresh()
         } catch(err) {
             console.log(err.message)
         }

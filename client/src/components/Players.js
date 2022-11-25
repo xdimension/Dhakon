@@ -8,7 +8,7 @@ export function Players()
     let num = 1;
     let round = 1;
 
-    let { vmContract, refreshState } = useContext(Web3Context)
+    let { vmContract, refresh } = useContext(Web3Context)
     
     const [players, setPlayers] = useState([])
     const [winners, setWinners] = useState([])
@@ -30,7 +30,7 @@ export function Players()
     useEffect(() => {
         getPlayers()
         getWinners()
-    }, [vmContract, refreshState])
+    }, [vmContract, refresh])
 
     return (
         <section className="players" id="players">

@@ -2,7 +2,7 @@ import { useContext } from "react"
 import { Web3Context } from "./Web3Provider"
 
 export function PayWinner() {
-    let { vmContract, address, refreshInfo } = useContext(Web3Context)
+    let { vmContract, address, doRefresh } = useContext(Web3Context)
 
     const payWinner = async() => {
         console.log('paying Winner')
@@ -12,7 +12,7 @@ export function PayWinner() {
                     from: address
                 })
 
-            refreshInfo()
+            doRefresh()
         } catch(err) {
             console.log(err.message)
         }

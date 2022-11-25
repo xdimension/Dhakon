@@ -12,7 +12,7 @@ export function Web3Provider({children})
     const [web3, setWeb3] = useState()
     const [vmContract, setVmContract] = useState()
     const [address, setAddress] = useState()
-    const [refreshState, setRefreshState] = useState();
+    const [refresh, setRefresh] = useState();
 
     const initializeWeb3 = async() => {
 
@@ -40,7 +40,7 @@ export function Web3Provider({children})
         }
     }
 
-    const refreshInfo = useCallback(() => setRefreshState({}), [])
+    const doRefresh = useCallback(() => setRefresh({}), [])
 
     const greet = async() => { alert('hello') }
 
@@ -51,8 +51,8 @@ export function Web3Provider({children})
                 web3,
                 vmContract,
                 address,
-                refreshState,
-                refreshInfo
+                refresh,
+                doRefresh
             }}
         >
             {children}
