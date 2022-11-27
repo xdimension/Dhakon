@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState, useCallback } from "react"
+import { createContext, useState, useCallback } from "react"
 import Web3 from "web3"
 import contract from "../scripts/contract"
 
@@ -14,7 +14,7 @@ export function Web3Provider({children})
     const [address, setAddress] = useState()
     const [refresh, setRefresh] = useState();
 
-    const initializeWeb3 = async() => {
+    const initializeWeb3 = useCallback(async() => {
 
         if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
             try {
@@ -38,7 +38,7 @@ export function Web3Provider({children})
             alert('Please install MetaMask wallet first')
             window.open("https://metamask.io", "_blank")
         }
-    }
+    }, [])
 
     const doRefresh = useCallback(() => setRefresh({}), [])
 
