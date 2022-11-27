@@ -5,7 +5,6 @@ export function PickWinner() {
     let { vmContract, address, doRefresh } = useContext(Web3Context)
 
     const pickWinner = async() => {
-        console.log('picking Winner')
         try {
             await vmContract.methods.pickWinner()
                 .send({

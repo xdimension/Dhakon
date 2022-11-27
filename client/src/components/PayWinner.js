@@ -5,7 +5,6 @@ export function PayWinner() {
     let { vmContract, address, doRefresh } = useContext(Web3Context)
 
     const payWinner = async() => {
-        console.log('paying Winner')
         try {
             await vmContract.methods.payWinner()
                 .send({
