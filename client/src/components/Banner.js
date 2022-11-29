@@ -57,8 +57,9 @@ export const Banner = () => {
               <div className={isVisible ? "animate__animated animate__fadeIn" : ""}>
                 <span className="tagline">Welcome to CrowdPot</span>
                 <h1>{`Hi! Is Today Your Luckiest Day?`}</h1>
-                  <p>Coz you're going to have a chance to get a JACKPOT! Win the Whole Pot with only 1 MATIC</p>
-                  <EnterPot />
+                <h4>You have a chance to WIN a JACKPOT! Take the Whole Pot with only 1 MATIC</h4>
+                
+                <EnterPot />
               </div>}
             </TrackVisibility>
           </Col>
