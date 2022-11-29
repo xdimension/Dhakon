@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import { Container, Row, Col } from "react-bootstrap";
-import headerImg from "../assets/img/piggybank.png";
-import { ArrowRightCircle } from 'react-bootstrap-icons';
-import 'animate.css';
-import TrackVisibility from 'react-on-screen';
+import { useState, useEffect } from "react"
+import { Container, Row, Col } from "react-bootstrap"
+import TrackVisibility from 'react-on-screen'
+import headerImg from "../assets/img/piggybank.png"
+import { EnterPot } from "./EnterPot"
+import 'animate.css'
 
 export const Banner = () => {
   const [loopNum, setLoopNum] = useState(0);
@@ -58,7 +58,7 @@ export const Banner = () => {
                 <span className="tagline">Welcome to CrowdPot</span>
                 <h1>{`Hi! Is Today Your Luckiest Day?`}</h1>
                   <p>Coz you're going to have a chance to get a JACKPOT! Win the Whole Pot with only 1 MATIC</p>
-                  <button onClick={() => console.log('connect')}>Connect to Wallet<ArrowRightCircle size={25} /></button>
+                  <EnterPot />
               </div>}
             </TrackVisibility>
           </Col>

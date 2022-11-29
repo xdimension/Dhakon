@@ -4,11 +4,10 @@ import truncateEthAddress from "truncate-eth-address"
 
 export function ConnectWallet() 
 {
-    let { initializeWeb3, address } = useContext(Web3Context)
+    const { initializeWeb3, address } = useContext(Web3Context)
 
     return (
-        <button style={{background:'blue',color:'#FFF',padding:'20px'}} 
-            onClick={initializeWeb3}>
+        <button className="vvd" onClick={initializeWeb3}>
             <span>{ address ? truncateEthAddress(address) + " (Switch)" : "Connect to Wallet"}</span>
         </button>
     )

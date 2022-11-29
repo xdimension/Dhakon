@@ -1,4 +1,5 @@
 import { useContext } from "react"
+import { ArrowRightCircle } from 'react-bootstrap-icons';
 import { Web3Context } from "./Web3Provider"
 
 export function EnterPot() 
@@ -20,8 +21,6 @@ export function EnterPot()
     }
     
     return (
-        <button style={{background:'red',color:'#FFF',padding:'20px'}} 
-          onClick={enterPotHandler}><span>Join Pot</span>
-        </button>
+        <button onClick={enterPotHandler}>Join the Pot <ArrowRightCircle size={25} /></button>
     )
 }
