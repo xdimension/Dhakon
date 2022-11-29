@@ -7,7 +7,6 @@ import { NavBar } from "./components/NavBar"
 import { Banner } from "./components/Banner"
 import { PickWinner } from "./components/PickWinner"
 import { PayWinner } from "./components/PayWinner"
-import { GameRound } from "./components/GameRound"
 import { Stats } from "./components/Stats"
 import { PlayersContainer } from "./components/PlayersContainer"
 import { MailchimpForm } from "./components/MailchimpForm"
@@ -28,10 +27,6 @@ function App() {
         <MailchimpForm /> 
 
         <div style={{paddingTop:'50px', paddingBottom:'150px'}}>
-
-          <div className="mt-2">
-            <GameRound />
-          </div>
 
           <div style={{marginTop:'50px'}}>
             <PickWinner />
