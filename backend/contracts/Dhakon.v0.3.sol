@@ -223,6 +223,10 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         callbackGasLimit = _val;
     }
 
+    function isOwner(address _address) public view returns(bool) {
+        return (_address == owner);
+    }
+
     modifier onlyOwner() {
       require(msg.sender == owner);
       _;
