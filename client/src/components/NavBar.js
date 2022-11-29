@@ -1,16 +1,19 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { BrowserRouter as Router } from "react-router-dom"
-import { Navbar, Nav, Container } from "react-bootstrap"
+import { Navbar, Nav, NavDropdown, Container } from "react-bootstrap"
 import logo from '../assets/img/logo.svg'
 import navIcon1 from '../assets/img/nav-icon1.svg'
 import navIcon2 from '../assets/img/nav-icon2.svg'
 import navIcon3 from '../assets/img/nav-icon3.svg'
 import { ConnectWallet } from "./ConnectWallet"
+import { Web3Context } from "./Web3Provider"
 
 export const NavBar = () => {
 
   const [activeLink, setActiveLink] = useState('home');
   const [scrolled, setScrolled] = useState(false);
+
+  const { isOwner, pickWinner, payWinner } = useContext(Web3Context)
 
   useEffect(() => {
     const onScroll = () => {
@@ -45,6 +48,11 @@ export const NavBar = () => {
               <Nav.Link href="#home" className={activeLink === 'home' ? 'active navbar-link' : 'navbar-link'} onClick={() => onUpdateActiveLink('home')}>Home</Nav.Link>
               <Nav.Link href="#stats" className={activeLink === 'stats' ? 'active navbar-link' : 'navbar-link'} onClick={() => onUpdateActiveLink('stats')}>Stats</Nav.Link>
               <Nav.Link href="#contact" className={activeLink === 'contact' ? 'active navbar-link' : 'navbar-link'} onClick={() => onUpdateActiveLink('contact')}>Contact</Nav.Link>
+              {isOwner && 
+                  <NavDropdown title="Admin" id="basic-nav-dropdown">
+                    <NavDropdown.Item onClick={pickWinner}>Pick Winner</NavDropdown.Item>  
+                    <NavDropdown.Item onClick={payWinner}>Pay Winner</NavDropdown.Item>  
+                  </NavDropdown>}
             </Nav>
             <span className="navbar-text">
               <div className="social-icon">

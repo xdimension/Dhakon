@@ -12,6 +12,7 @@ export function Web3Provider({children})
     const [web3, setWeb3] = useState()
     const [vmContract, setVmContract] = useState()
     const [address, setAddress] = useState()
+    const [isOwner, setIsOwner] = useState()
     const [refresh, setRefresh] = useState()
     const [gameRound, setGameRound] = useState(0)
     const [roundEndsAt, setRoundEndsAt] = useState()
@@ -44,14 +45,18 @@ export function Web3Provider({children})
     }, [])
 
     const connectToWallet = useCallback(async() => {
-        if (web3) {
+        if (web3 && vmContract) {
             // get the account's address
             const address = (await web3.eth.getAccounts())[0]
             setAddress(address)
+
+            const isOwner = await vmContract.methods.isOwner().call()
+            setIsOwner(isOwner)
+
         } else {
             alert('Please connect Metamask to the network')
         }
-    }, [web3])
+    }, [web3, vmContract])
 
     const pickWinner = useCallback(async() => {
         if (vmContract && address) {
@@ -104,6 +109,7 @@ export function Web3Provider({children})
                 vmContract,
                 connectToWallet,
                 address,
+                isOwner,
                 gameRound,
                 roundEndsAt,
                 balance,
