@@ -29,15 +29,6 @@ export function Web3Provider({children})
             const vmContract = contract(web3)
             setVmContract(vmContract)
 
-            const balance = await vmContract.methods.getBalance().call()
-            setBalance(web3.utils.fromWei(balance, 'ether'))
-
-            const round = await vmContract.methods.currentRound().call()
-            setGameRound(parseInt(round)+1)
-
-            const roundEnds = await vmContract.methods.roundEndsAt().call()
-            setRoundEndsAt(roundEnds)
-
         } catch(err) {
             console.log(err.message)
         }
@@ -101,6 +92,23 @@ export function Web3Provider({children})
             window.open("https://metamask.io", "_blank")
         }
     }, [])
+
+    useEffect(() => {
+        const getGameInfo = async() => {
+            if (vmContract) {
+                const balance = await vmContract.methods.getBalance().call()
+                setBalance(web3.utils.fromWei(balance, 'ether'))
+
+                const round = await vmContract.methods.currentRound().call()
+                setGameRound(parseInt(round)+1)
+
+                const roundEnds = await vmContract.methods.roundEndsAt().call()
+                setRoundEndsAt(roundEnds)
+            }
+        }
+
+        getGameInfo()
+    }, [vmContract, refresh])
 
     return (
         <Web3Context.Provider

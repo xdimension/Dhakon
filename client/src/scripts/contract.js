@@ -3,7 +3,7 @@ import jsonContract from '../contracts/MockDhakon.json';
 const contract = (web3) => {
   return new web3.eth.Contract(
     jsonContract.abi,
-    "0x56ab6eab59BdDBACf37091812E4C8086681eB517"
+    "0x7844F0d21d848575f6034b05526012D80725B998"
   )
 }
   
