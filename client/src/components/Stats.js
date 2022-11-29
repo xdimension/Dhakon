@@ -9,7 +9,13 @@ export function Stats()
 {
     const { gameRound, roundEndsAt, numOfPlayers, balance } = useContext(Web3Context)
 
-    let remainingDays = parseInt((new Date(roundEndsAt * 1000) - (new Date()))  / (1000 * 3600 * 24))
+    let startingDays = 0;
+    let remainingDays = 0;
+
+    if (roundEndsAt > 0) {
+        startingDays = 90;
+        remainingDays =  parseInt((new Date(roundEndsAt * 1000) - (new Date()))  / (1000 * 3600 * 24));
+    }
 
     return (
         <section className="stat" id="stats">
@@ -38,7 +44,7 @@ export function Stats()
                                     <Col className="item" sm={12} md={4}>
                                         <h5>Remaining Days</h5>
                                         <span className="counter">
-                                            <CountUp start={90} end={remainingDays} duration={3} />
+                                            <CountUp start={startingDays} end={remainingDays} duration={3} />
                                         </span>
                                     </Col>
                                 </Row>)}
