@@ -50,7 +50,7 @@ export function Web3Provider({children})
             const address = (await web3.eth.getAccounts())[0]
             setAddress(address)
 
-            const isOwner = await vmContract.methods.isOwner().call()
+            const isOwner = await vmContract.methods.isOwner(address).call()
             setIsOwner(isOwner)
 
         } else {
