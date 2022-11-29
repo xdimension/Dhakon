@@ -20,33 +20,27 @@ export function Web3Provider({children})
 
     const initializeWeb3 = useCallback(async() => {
 
-        if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
-            try {
-                // connect to wallet 
-                await window.ethereum.request({ method: "eth_requestAccounts" })
-                const web3 = new Web3(window.ethereum)
-                setWeb3(web3)
+        try {
+            await window.ethereum.request({ method: "eth_requestAccounts" })
+            const web3 = new Web3(window.ethereum)
+            setWeb3(web3)
 
-                const vmContract = contract(web3)
-                setVmContract(vmContract)
+            const vmContract = contract(web3)
+            setVmContract(vmContract)
 
-                const balance = await vmContract.methods.getBalance().call()
-                setBalance(web3.utils.fromWei(balance, 'ether'))
+            const balance = await vmContract.methods.getBalance().call()
+            setBalance(web3.utils.fromWei(balance, 'ether'))
 
-                const round = await vmContract.methods.currentRound().call()
-                setGameRound(parseInt(round)+1)
+            const round = await vmContract.methods.currentRound().call()
+            setGameRound(parseInt(round)+1)
 
-                const roundEnds = await vmContract.methods.roundEndsAt().call()
-                setRoundEndsAt(roundEnds)
+            const roundEnds = await vmContract.methods.roundEndsAt().call()
+            setRoundEndsAt(roundEnds)
 
-            } catch(err) {
-                console.log(err.message)
-            }
-        } else {
-            // MetaMask required
-            alert('Please install MetaMask wallet first')
-            window.open("https://metamask.io", "_blank")
+        } catch(err) {
+            console.log(err.message)
         }
+
     }, [])
 
     const connectToWallet = useCallback(async() => {
@@ -54,6 +48,8 @@ export function Web3Provider({children})
             // get the account's address
             const address = (await web3.eth.getAccounts())[0]
             setAddress(address)
+        } else {
+            alert('Please connect Metamask to the network')
         }
     }, [web3])
 
@@ -61,7 +57,15 @@ export function Web3Provider({children})
 
     const greet = async() => { alert('hello') }
 
-    useEffect(() => { initializeWeb3() }, [])
+    useEffect(() => {
+        if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
+            initializeWeb3()
+        } else {
+            // MetaMask required
+            alert('Please install MetaMask wallet first')
+            window.open("https://metamask.io", "_blank")
+        }
+    }, [])
 
     return (
         <Web3Context.Provider
