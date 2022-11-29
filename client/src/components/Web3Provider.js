@@ -53,6 +53,36 @@ export function Web3Provider({children})
         }
     }, [web3])
 
+    const pickWinner = useCallback(async() => {
+        if (vmContract && address) {
+            try {
+                await vmContract.methods.pickWinner()
+                    .send({
+                        from: address
+                    })
+
+                doRefresh()
+            } catch(err) {
+                console.log(err.message)
+            }
+        }
+    }, [vmContract, address])
+
+    const payWinner = useCallback(async() => {
+        if (vmContract && address) {
+            try {
+                await vmContract.methods.payWinner()
+                    .send({
+                        from: address
+                    })
+
+                doRefresh()
+            } catch(err) {
+                console.log(err.message)
+            }
+        }
+    }, [vmContract, address])
+
     const doRefresh = useCallback(() => setRefresh({}), [])
 
     const greet = async() => { alert('hello') }
@@ -79,6 +109,8 @@ export function Web3Provider({children})
                 balance,
                 numOfPlayers,
                 setNumOfPlayers,
+                pickWinner,
+                payWinner,
                 refresh,
                 doRefresh
             }}

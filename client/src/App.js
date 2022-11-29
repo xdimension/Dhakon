@@ -4,8 +4,6 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import { Web3Provider } from "./components/Web3Provider"
 import { NavBar } from "./components/NavBar"
 import { Banner } from "./components/Banner"
-import { PickWinner } from "./components/PickWinner"
-import { PayWinner } from "./components/PayWinner"
 import { Stats } from "./components/Stats"
 import { PlayersContainer } from "./components/PlayersContainer"
 import { MailchimpForm } from "./components/MailchimpForm"
@@ -24,18 +22,6 @@ function App() {
         <Stats />
         <PlayersContainer />
         <MailchimpForm /> 
-
-        <div style={{paddingTop:'50px', paddingBottom:'150px'}}>
-
-          <div style={{marginTop:'50px'}}>
-            <PickWinner />
-          </div>
-
-          <div style={{marginTop:'20px'}}>
-            <PayWinner />
-          </div>
-
-        </div>
 
         <Contact />
         <Footer />
