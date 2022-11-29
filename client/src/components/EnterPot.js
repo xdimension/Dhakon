@@ -7,16 +7,20 @@ export function EnterPot()
     let { web3, vmContract, address, doRefresh } = useContext(Web3Context)
 
     const enterPotHandler = async() => {
-        try {
-            await vmContract.methods.enter()
-                .send({
-                    from: address,
-                    value: web3.utils.toWei('0.1', 'ether')
-                })
+        if (vmContract) {
+            try {
+                await vmContract.methods.enter()
+                    .send({
+                        from: address,
+                        value: web3.utils.toWei('0.1', 'ether')
+                    })
 
-            doRefresh()
-        } catch(err) {
-            console.log(err.message)
+                doRefresh()
+            } catch(err) {
+                console.log(err.message)
+            }
+        } else {
+            alert('Please connect to wallet first')
         }
     }
     
