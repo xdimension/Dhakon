@@ -8,7 +8,7 @@ export function Players()
     let num = 1;
     let round = 1;
 
-    let { vmContract, refresh } = useContext(Web3Context)
+    let { vmContract, setNumOfPlayers, refresh } = useContext(Web3Context)
     
     const [players, setPlayers] = useState([])
 
@@ -16,6 +16,7 @@ export function Players()
         if (vmContract) {
             const players = await vmContract.methods.getPlayers().call()
             setPlayers(players)
+            setNumOfPlayers(players.length)
         }
     }
 

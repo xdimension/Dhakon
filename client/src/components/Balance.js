@@ -2,9 +2,7 @@ import { useState, useContext, useEffect } from "react"
 import { Web3Context } from "./Web3Provider"
 
 export function Balance() {
-    const { web3, vmContract, refresh } = useContext(Web3Context)
-
-    const [balance, setBalance] = useState(0)
+    const { web3, vmContract, balance, setBalance, refresh } = useContext(Web3Context)
 
     const getBalance = async () => {
         if (vmContract) {

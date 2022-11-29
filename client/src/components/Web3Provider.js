@@ -12,7 +12,11 @@ export function Web3Provider({children})
     const [web3, setWeb3] = useState()
     const [vmContract, setVmContract] = useState()
     const [address, setAddress] = useState()
-    const [refresh, setRefresh] = useState();
+    const [refresh, setRefresh] = useState()
+    const [gameRound, setGameRound] = useState(0)
+    const [roundEndsAt, setRoundEndsAt] = useState()
+    const [balance, setBalance] = useState(0)
+    const [numOfPlayers, setNumOfPlayers] = useState(0)
 
     const initializeWeb3 = useCallback(async() => {
 
@@ -28,7 +32,16 @@ export function Web3Provider({children})
 
                 // get the account's address
                 const address = (await web3.eth.getAccounts())[0]
-                setAddress(address)    
+                setAddress(address)
+
+                const balance = await vmContract.methods.getBalance().call()
+                setBalance(web3.utils.fromWei(balance, 'ether'))
+
+                const round = await vmContract.methods.currentRound().call()
+                setGameRound(parseInt(round)+1)
+
+                const roundEnds = await vmContract.methods.roundEndsAt().call()
+                setRoundEndsAt(roundEnds)
 
             } catch(err) {
                 console.log(err.message)
@@ -51,6 +64,11 @@ export function Web3Provider({children})
                 web3,
                 vmContract,
                 address,
+                gameRound,
+                roundEndsAt,
+                balance,
+                numOfPlayers,
+                setNumOfPlayers,
                 refresh,
                 doRefresh
             }}
