@@ -7,7 +7,7 @@ export function EnterPot()
     let { web3, vmContract, address, doRefresh } = useContext(Web3Context)
 
     const enterPotHandler = async() => {
-        if (vmContract) {
+        if (vmContract && address) {
             try {
                 await vmContract.methods.enter()
                     .send({

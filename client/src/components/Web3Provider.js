@@ -1,4 +1,4 @@
-import { createContext, useState, useCallback } from "react"
+import { createContext, useState, useCallback, useEffect } from "react"
 import Web3 from "web3"
 import contract from "../scripts/contract"
 
@@ -30,10 +30,6 @@ export function Web3Provider({children})
                 const vmContract = contract(web3)
                 setVmContract(vmContract)
 
-                // get the account's address
-                const address = (await web3.eth.getAccounts())[0]
-                setAddress(address)
-
                 const balance = await vmContract.methods.getBalance().call()
                 setBalance(web3.utils.fromWei(balance, 'ether'))
 
@@ -53,16 +49,26 @@ export function Web3Provider({children})
         }
     }, [])
 
+    const connectToWallet = useCallback(async() => {
+        if (web3) {
+            // get the account's address
+            const address = (await web3.eth.getAccounts())[0]
+            setAddress(address)
+        }
+    }, [web3])
+
     const doRefresh = useCallback(() => setRefresh({}), [])
 
     const greet = async() => { alert('hello') }
 
+    useEffect(() => { initializeWeb3() }, [])
+
     return (
         <Web3Context.Provider
             value={{
-                initializeWeb3,
                 web3,
                 vmContract,
+                connectToWallet,
                 address,
                 gameRound,
                 roundEndsAt,
