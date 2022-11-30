@@ -3,11 +3,11 @@ import { Row, Col } from "react-bootstrap"
 import TrackVisibility from "react-on-screen"
 import colorSharp from "../assets/img/color-sharp.png"
 import CountUp from "react-countup"
-import { Web3Context } from "./Web3Provider"
+import { GameContext } from "./GameProvider"
 
 export function Stats() 
 {
-    const { gameRound, roundEndsAt, numOfPlayers, balance } = useContext(Web3Context)
+    const { balance, gameRound, roundEndsAt, numOfPlayers } = useContext(GameContext)
 
     let startingDays = 0;
     let remainingDays = 0;

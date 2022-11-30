@@ -1,14 +1,15 @@
 import { useState, useContext, useEffect } from "react";
 import { Table } from "react-bootstrap";
 import truncateEthAddress from "truncate-eth-address";
+import { GameContext } from "./GameProvider";
 import { Web3Context } from "./Web3Provider";
 
 export function Players() 
 {
     let num = 1;
-    let round = 1;
 
-    let { vmContract, setNumOfPlayers, refresh } = useContext(Web3Context)
+    const { vmContract, refresh } = useContext(Web3Context)
+    const { setNumOfPlayers } = useContext(GameContext)
     
     const [players, setPlayers] = useState([])
 

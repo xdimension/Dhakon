@@ -7,14 +7,16 @@ import navIcon2 from '../assets/img/nav-icon2.svg'
 import navIcon3 from '../assets/img/nav-icon3.svg'
 import { ConnectWallet } from "./ConnectWallet"
 import { Web3Context } from "./Web3Provider"
+import { GameContext } from "./GameProvider"
 
 export const NavBar = () => {
 
   const [activeLink, setActiveLink] = useState('home');
   const [scrolled, setScrolled] = useState(false);
 
-  const { isOwner, pickWinner, payWinner } = useContext(Web3Context)
-
+  const { isOwner } = useContext(Web3Context)
+  const { pickWinner, payWinner } = useContext(GameContext)
+  
   useEffect(() => {
     const onScroll = () => {
       if (window.scrollY > 50) {

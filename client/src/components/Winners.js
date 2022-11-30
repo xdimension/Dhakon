@@ -7,7 +7,7 @@ export function Winners()
 {
     let round = 1;
 
-    let { vmContract, refresh } = useContext(Web3Context)
+    const { vmContract, refresh } = useContext(Web3Context)
     
     const [winners, setWinners] = useState([])
 

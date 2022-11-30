@@ -14,12 +14,9 @@ export function Web3Provider({children})
     const [address, setAddress] = useState()
     const [isOwner, setIsOwner] = useState()
     const [refresh, setRefresh] = useState()
-    const [gameRound, setGameRound] = useState(0)
-    const [roundEndsAt, setRoundEndsAt] = useState()
-    const [balance, setBalance] = useState(0)
-    const [numOfPlayers, setNumOfPlayers] = useState(0)
 
     const initializeWeb3 = useCallback(async() => {
+        console.log('Initializing Web3')
 
         try {
             await window.ethereum.request({ method: "eth_requestAccounts" })
@@ -49,36 +46,6 @@ export function Web3Provider({children})
         }
     }, [web3, vmContract])
 
-    const pickWinner = useCallback(async() => {
-        if (vmContract && address) {
-            try {
-                await vmContract.methods.pickWinner()
-                    .send({
-                        from: address
-                    })
-
-                doRefresh()
-            } catch(err) {
-                console.log(err.message)
-            }
-        }
-    }, [vmContract, address])
-
-    const payWinner = useCallback(async() => {
-        if (vmContract && address) {
-            try {
-                await vmContract.methods.payWinner()
-                    .send({
-                        from: address
-                    })
-
-                doRefresh()
-            } catch(err) {
-                console.log(err.message)
-            }
-        }
-    }, [vmContract, address])
-
     const doRefresh = useCallback(() => setRefresh({}), [])
 
     const greet = async() => { alert('hello') }
@@ -93,23 +60,6 @@ export function Web3Provider({children})
         }
     }, [])
 
-    useEffect(() => {
-        const getGameInfo = async() => {
-            if (vmContract) {
-                const balance = await vmContract.methods.getBalance().call()
-                setBalance(web3.utils.fromWei(balance, 'ether'))
-
-                const round = await vmContract.methods.currentRound().call()
-                setGameRound(parseInt(round)+1)
-
-                const roundEnds = await vmContract.methods.roundEndsAt().call()
-                setRoundEndsAt(roundEnds)
-            }
-        }
-
-        getGameInfo()
-    }, [vmContract, refresh])
-
     return (
         <Web3Context.Provider
             value={{
@@ -118,13 +68,6 @@ export function Web3Provider({children})
                 connectToWallet,
                 address,
                 isOwner,
-                gameRound,
-                roundEndsAt,
-                balance,
-                numOfPlayers,
-                setNumOfPlayers,
-                pickWinner,
-                payWinner,
                 refresh,
                 doRefresh
             }}

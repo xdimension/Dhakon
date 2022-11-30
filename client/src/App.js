@@ -1,4 +1,4 @@
-import "./App.css";
+import "./App.css"
 import "bootstrap/dist/css/bootstrap.min.css"
 
 import { Web3Provider } from "./components/Web3Provider"
@@ -9,23 +9,26 @@ import { PlayersContainer } from "./components/PlayersContainer"
 import { MailchimpForm } from "./components/MailchimpForm"
 import { Contact } from "./components/Contact"
 import { Footer } from "./components/Footer"
+import { GameProvider } from "./components/GameProvider"
 
 function App() {
 
   return (
     <Web3Provider>
-      <div className="App">
-        <NavBar />
-        
-        <Banner />
+      <GameProvider>
+        <div className="App">
+          <NavBar />
+          
+          <Banner />
 
-        <Stats />
-        <PlayersContainer />
-        <MailchimpForm /> 
+          <Stats />
+          <PlayersContainer />
+          <MailchimpForm /> 
 
-        <Contact />
-        <Footer />
-      </div>
+          <Contact />
+          <Footer />
+        </div>
+      </GameProvider>
     </Web3Provider>
   );
 }
