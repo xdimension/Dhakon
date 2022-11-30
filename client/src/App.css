@@ -439,6 +439,7 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
   font-weight: 700;
   letter-spacing: 0.5px;
   line-height: 1.2em;
+  padding-top: 1rem !important;
 }
 .new-email-bx {
   background: #fff;
