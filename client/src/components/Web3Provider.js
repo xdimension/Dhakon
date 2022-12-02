@@ -5,6 +5,8 @@ import contract from "../scripts/contract"
 export const Web3Context = createContext({
     web3: null,
     vmContract: null,
+    address: '',
+    isOwner: false,
 })
 
 export function Web3Provider({children}) 
@@ -15,36 +17,47 @@ export function Web3Provider({children})
     const [isOwner, setIsOwner] = useState()
     const [refresh, setRefresh] = useState()
 
+    const onAccountsChanged = useCallback(async() => {
+        console.log('Handle accounts changed')
+
+        try {
+            const accounts = await window.ethereum.request({ method: "eth_requestAccounts" })
+
+            if (accounts[0] !== address) {
+                setAddress(accounts[0]);
+
+                if (vmContract) {
+                    const isOwner = await vmContract.methods.isOwner(accounts[0]).call()
+                    setIsOwner(isOwner)
+                }
+            }
+        } catch(err) {
+            console.log(err.message)
+        }
+    }, [vmContract, address])
+
     const initializeWeb3 = useCallback(async() => {
         console.log('Initializing Web3')
 
         try {
-            await window.ethereum.request({ method: "eth_requestAccounts" })
             const web3 = new Web3(window.ethereum)
             setWeb3(web3)
-
+            
             const vmContract = contract(web3)
             setVmContract(vmContract)
 
         } catch(err) {
             console.log(err.message)
         }
-
     }, [])
 
     const connectToWallet = useCallback(async() => {
-        if (web3 && vmContract) {
-            // get the account's address
-            const address = (await web3.eth.getAccounts())[0]
-            setAddress(address)
-
-            const isOwner = await vmContract.methods.isOwner(address).call()
-            setIsOwner(isOwner)
-
+        if (vmContract) {
+            onAccountsChanged()
         } else {
             alert('Please connect Metamask to the network')
         }
-    }, [web3, vmContract])
+    }, [vmContract])
 
     const doRefresh = useCallback(() => setRefresh({}), [])
 
@@ -59,6 +72,14 @@ export function Web3Provider({children})
             window.open("https://metamask.io", "_blank")
         }
     }, [])
+
+    useEffect(() => {
+        window.ethereum.on('accountsChanged', onAccountsChanged);
+
+        return () => {
+            window.ethereum.removeListener('accountsChanged', onAccountsChanged)
+        }
+    }, [vmContract, address])
 
     return (
         <Web3Context.Provider

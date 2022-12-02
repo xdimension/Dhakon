@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react"
+import { useState, useEffect, useContext, useCallback } from "react"
 import { BrowserRouter as Router } from "react-router-dom"
 import { Navbar, Nav, NavDropdown, Container } from "react-bootstrap"
 import logo from '../assets/img/logo.svg'
@@ -31,9 +31,9 @@ export const NavBar = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, [])
 
-  const onUpdateActiveLink = (value) => {
+  const onUpdateActiveLink = useCallback((value) => {
     setActiveLink(value);
-  }
+  }, [])
 
   return (
     <Router>

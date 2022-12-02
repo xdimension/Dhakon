@@ -8,7 +8,7 @@ export function ConnectWallet()
 
     return (
         <button className="vvd" onClick={connectToWallet}>
-            <span>{ address ? truncateEthAddress(address) + " (Switch)" : "Connect to Wallet"}</span>
+            <span>{ address ? truncateEthAddress(address) : "Connect to Wallet"}</span>
         </button>
     )
 }
