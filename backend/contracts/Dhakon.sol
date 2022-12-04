@@ -118,10 +118,10 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         return tickets.length;
     }
 
-    function addPlayers(address playerAddr) internal {
-        if (checkPlayers[playerAddr] != true) {  // only add if player's address not yet exist
-            checkPlayers[playerAddr] = true;
-            players.push(playerAddr);
+    function addPlayer(address _address) internal {
+        if (checkPlayers[_address] != true) {  // only add if player's address not yet exist
+            checkPlayers[_address] = true;
+            players.push(_address);
         }
     }
 
@@ -135,7 +135,7 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         tickets.push(ticket);
         playerTickets[ticket] = player;
 
-        addPlayers(player);
+        addPlayer(player);
         emit NewPlayerEntered(ticket, player);
 
         // start the round when first ticket is added
