@@ -183,12 +183,12 @@ contract Dhakon is VRFV2WrapperConsumerBase {
     }
 
     function resetRound() internal {        
-        for(uint i=0;i<players.length;i++) {
+        for(uint i=0; i < players.length; i++) {
             delete checkPlayers[players[i]]; 
         }
         players = new address payable[](0);
 
-        for(uint i=0;i<tickets.length;i++) {
+        for(uint i=0; i < tickets.length; i++) {
             delete playerTickets[tickets[i]];
         }
         tickets = new uint[](0);
