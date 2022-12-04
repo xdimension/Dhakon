@@ -112,13 +112,17 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         return players;
     }
 
-    function getLastPlayers(uint32 _count) public view returns(address[] memory) {
-        uint32 count = 1;
-        uint idx = tickets.length - 1;
-        address[] memory lastPlayers = new address[](_count);
+    function getLastPlayers(uint8 limit) public view returns(address[] memory) {
+        require(tickets.length > 0, "There is no tickets yet");
+        require(limit > 0, "Limit should be greater than 0");
+        
+        uint8 idx1 = 1;
+        uint idx2 = tickets.length;
+        address[] memory lastPlayers = new address[](limit);
 
-        while(idx >= 0 && count <= _count) {
-            lastPlayers[count++] = tickets[idx--].player;
+        while(idx1 <= limit && idx2 > 0) {
+            lastPlayers[idx1-1] = tickets[idx2-1].player;
+            idx1++; idx2--;
         }
 
         return lastPlayers;
@@ -130,6 +134,22 @@ contract Dhakon is VRFV2WrapperConsumerBase {
 
     function getTickets() public view returns(Ticket[] memory) {
         return tickets;
+    }
+
+    function getLastTickets(uint8 limit) public view returns(Ticket[] memory) {
+        require(tickets.length > 0, "There is no tickets yet");
+        require(limit > 0, "Limit should be greater than 0");
+        
+        uint8 idx1 = 1;
+        uint idx2 = tickets.length;
+        Ticket[] memory lastTickets = new Ticket[](limit);
+
+        while(idx1 <= limit && idx2 > 0) {
+            lastTickets[idx1-1] = tickets[idx2-1];
+            idx1++; idx2--;
+        }
+
+        return lastTickets;
     }
 
     function getNumOfTickets() public view returns(uint) {
