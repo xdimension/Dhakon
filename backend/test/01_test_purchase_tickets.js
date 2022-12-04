@@ -21,8 +21,12 @@ contract("Dhakon", (accounts) => {
     let countTickets = (await dhakon.getNumOfTickets()).toNumber();
     assert.equal(countTickets, 1, "There should be 1 ticket");
 
-    let ticket = (await dhakon.tickets(0)).toString();
-    let player = await dhakon.playerTickets(ticket);
+    let ticket = await dhakon.tickets(0);
+    assert.ok(ticket, "Cannot get the ticket");
+    assert.equal(ticket.player, accounts[0], "Ticket's player is not correct")
+
+    let ticketNum = ticket.num.toString();
+    let player = await dhakon.playerTickets(ticketNum);
     
     assert.equal(player, accounts[0], "Player's address is not correct");
   })
@@ -35,8 +39,12 @@ contract("Dhakon", (accounts) => {
     let countTickets = (await dhakon.getNumOfTickets()).toNumber();
     assert.equal(countTickets, 2, "There should be 2 tickets");
 
-    let ticket = (await dhakon.tickets(1)).toString();
-    let player = await dhakon.playerTickets(ticket);
+    let ticket = await dhakon.tickets(1);
+    assert.ok(ticket, "Cannot get the ticket");
+    assert.equal(ticket.player, accounts[1], "Ticket's player is not correct")
+
+    let ticketNum = ticket.num.toString();
+    let player = await dhakon.playerTickets(ticketNum);
     
     assert.equal(player, accounts[1], "Player's address is not correct");
   })

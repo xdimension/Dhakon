@@ -15,7 +15,13 @@ contract Dhakon is VRFV2WrapperConsumerBase {
     address[] public players;
     mapping(address => bool) checkPlayers;
 
-    uint[] public tickets;          // array of ticket numbers
+    struct Ticket {
+        uint num;
+        uint time;
+        address player;
+    }
+
+    Ticket[] public tickets;
     mapping(uint => address) public playerTickets;   // ticket number => player's address
 
     struct Winner {
@@ -72,7 +78,7 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         require(randomness[0] != 0, "Problem in getting randomness");
 
         uint index = randomness[0] % tickets.length;
-        uint ticketNum = tickets[index];
+        uint ticketNum = tickets[index].num;
         Winner memory winner = Winner(
             ticketNum, 
             playerTickets[ticketNum],
@@ -84,10 +90,6 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         emit WinnerChosen(winner.ticket, winner.player);
 
         isPickingWinner = false;
-    }
-
-    function generateTicket() internal view returns (uint) {
-        return uint(keccak256(abi.encodePacked(owner, block.timestamp)));
     }
 
     function getWinners() public view returns(Winner[] memory) {
@@ -110,8 +112,24 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         return players;
     }
 
+    function getLastPlayers(uint32 _count) public view returns(address[] memory) {
+        uint32 count = 1;
+        uint idx = tickets.length - 1;
+        address[] memory lastPlayers = new address[](_count);
+
+        while(idx >= 0 && count <= _count) {
+            lastPlayers[count++] = tickets[idx--].player;
+        }
+
+        return lastPlayers;
+    }
+
     function getNumOfPlayers() public view returns (uint) {
         return players.length;
+    }
+
+    function getTickets() public view returns(Ticket[] memory) {
+        return tickets;
     }
 
     function getNumOfTickets() public view returns(uint) {
@@ -125,18 +143,27 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         }
     }
 
+    function newTicket(address player) internal view returns (Ticket memory) {
+        uint ticketNum = uint(keccak256(abi.encodePacked(owner, block.timestamp)));
+        return Ticket(
+            ticketNum,
+            block.timestamp,
+            player
+        );
+    }
+
     function enter() public payable {
         require(!isPausing, "The round is not in playing mode");
         require(msg.value >= ticketPrice, "Value is below Ticket Price");
 
         // save new ticket entering the round
-        uint ticket = generateTicket();
-        address payable player = payable(msg.sender);
+        address player = msg.sender;
+        Ticket memory ticket = newTicket(player);
         tickets.push(ticket);
-        playerTickets[ticket] = player;
+        playerTickets[ticket.num] = player;
 
         addPlayer(player);
-        emit NewPlayerEntered(ticket, player);
+        emit NewPlayerEntered(ticket.num, ticket.player);
 
         // start the round when first ticket is added
         if (tickets.length == 1) {
@@ -186,12 +213,12 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         for(uint i=0; i < players.length; i++) {
             delete checkPlayers[players[i]]; 
         }
-        players = new address payable[](0);
+        delete players;
 
         for(uint i=0; i < tickets.length; i++) {
-            delete playerTickets[tickets[i]];
+            delete playerTickets[tickets[i].num];
         }
-        tickets = new uint[](0);
+        delete tickets;
 
         isPausing = false;
     }

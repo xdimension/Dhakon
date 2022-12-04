@@ -24,8 +24,11 @@ contract("MockDhakon", async(accounts) => {
     let countPlayers = (await dhakon.getNumOfPlayers()).toNumber();
     assert.equal(countPlayers, 1, "Number of players is not equal 1")
 
-    let ticket = (await dhakon.tickets(0)).toString();
-    let player = await dhakon.playerTickets(ticket);
+    let ticket = await dhakon.tickets(0);
+    assert.ok(ticket, "Cannot get the ticket");
+
+    let ticketNum = ticket.num.toString();
+    let player = await dhakon.playerTickets(ticketNum);
     
     assert.equal(player, accounts[0], "Player's address is not correct");
   })
@@ -41,8 +44,12 @@ contract("MockDhakon", async(accounts) => {
     let countPlayers = (await dhakon.getNumOfPlayers()).toNumber();
     assert.equal(countPlayers, 2, "Number of players is not equal 2")
 
-    let ticket = (await dhakon.tickets(1)).toString();
-    let player = await dhakon.playerTickets(ticket);
+
+    let ticket = await dhakon.tickets(1);
+    assert.ok(ticket, "Cannot get the ticket");
+
+    let ticketNum = ticket.num.toString();
+    let player = await dhakon.playerTickets(ticketNum);
     
     assert.equal(player, accounts[1], "Player's address is not correct");
   })
@@ -58,8 +65,11 @@ contract("MockDhakon", async(accounts) => {
     let countPlayers = (await dhakon.getNumOfPlayers()).toNumber();
     assert.equal(countPlayers, 2, "Number of players is not equal 2")
 
-    let ticket = (await dhakon.tickets(2)).toString();
-    let player = await dhakon.playerTickets(ticket);
+    let ticket = await dhakon.tickets(2);
+    assert.ok(ticket, "Cannot get the ticket");
+    
+    let ticketNum = ticket.num.toString();
+    let player = await dhakon.playerTickets(ticketNum);
     
     assert.equal(player, accounts[1], "Player's address is not correct");
   })
@@ -94,7 +104,10 @@ contract("MockDhakon", async(accounts) => {
     await dhakon.setRoundEndsAt(Math.floor(new Date().getTime() / 1000));
 
     // let's become God who determines the future
-    let winningTicket = await dhakon.tickets(1);
+    let ticket = await dhakon.tickets(1);
+    assert.ok(ticket, "Cannot get the ticket");
+
+    let winningTicket = ticket.num;
     let winningPlayer = await dhakon.playerTickets(winningTicket);
 
     await dhakon.pickWinner();
