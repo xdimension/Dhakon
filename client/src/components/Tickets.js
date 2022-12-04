@@ -4,46 +4,47 @@ import truncateEthAddress from "truncate-eth-address";
 import { GameContext } from "./GameProvider";
 import { Web3Context } from "./Web3Provider";
 
-export function Players() 
+export function Tickets() 
 {
     let num = 1;
 
     const { vmContract, refresh } = useContext(Web3Context)
-    const { setNumOfPlayers } = useContext(GameContext)
+    const { setNumOfEntries } = useContext(GameContext)
     
-    const [players, setPlayers] = useState([])
+    const [tickets, setTickets] = useState([])
 
-    const getPlayers = async() => {
+    const getTickets = async() => {
         if (vmContract) {
-            const players = await vmContract.methods.getLastPlayers(10).call()
-            const numOfPlayers = await vmContract.methods.getNumOfPlayers().call()
+            let tickets = await vmContract.methods.getLastTickets(10).call()
+            tickets = tickets.filter((ticket) => ticket.time != 0);
+            const numOfTickets = await vmContract.methods.getNumOfTickets().call()
             
-            setPlayers(players)
-            setNumOfPlayers(numOfPlayers)
+            setTickets(tickets)
+            setNumOfEntries(numOfTickets)
         }
     }
 
     useEffect(() => {
-        getPlayers()
+        getTickets()
     }, [vmContract, refresh])
 
     return (
         <div className="players-bx wow slideInUp">
 
-            <h2>Players</h2>
+            <h2>Recent Entries</h2>
             <Table variant="dark" responsive="sm" striped bordered hover>
                 <thead>
                     <tr>
-                        <th>Num#</th>
-                        <th>Address</th>
+                        <th>Date</th>
+                        <th>Player</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {players.map((address) => {
+                    {tickets.map((ticket) => {
                         return (
                             <tr key={num++}>
-                                <td>{num}</td>
-                                <td>{truncateEthAddress(address)}</td>
+                                <td>{(new Date(ticket.time * 1000)).toLocaleString()}</td>
+                                <td>{truncateEthAddress(ticket.player)}</td>
                             </tr>
                         )
                     })}                           

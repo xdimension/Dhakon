@@ -12,7 +12,7 @@ export function GameProvider({children})
     const [balance, setBalance] = useState(0)
     const [gameRound, setGameRound] = useState(0)
     const [roundEndsAt, setRoundEndsAt] = useState()
-    const [numOfPlayers, setNumOfPlayers] = useState(0)
+    const [numOfEntries, setNumOfEntries] = useState(0)
 
     const { web3, vmContract, address, refresh, doRefresh } = useContext(Web3Context)
 
@@ -75,8 +75,8 @@ export function GameProvider({children})
                 gameRound,
                 roundEndsAt,
                 balance,
-                numOfPlayers,
-                setNumOfPlayers,
+                numOfEntries,
+                setNumOfEntries,
                 pickWinner,
                 payWinner,
             }}

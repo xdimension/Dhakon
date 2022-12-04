@@ -7,7 +7,7 @@ import { GameContext } from "./GameProvider"
 
 export function Stats() 
 {
-    const { balance, gameRound, roundEndsAt, numOfPlayers } = useContext(GameContext)
+    const { balance, gameRound, roundEndsAt, numOfEntries } = useContext(GameContext)
 
     let startingDays = 0;
     let remainingDays = 0;
@@ -36,9 +36,9 @@ export function Stats()
                                         </span>
                                     </Col>
                                     <Col className="item" sm={12} md={4}>
-                                        <h5>Players</h5>
+                                        <h5>Entries</h5>
                                         <span className="counter">
-                                            <CountUp end={numOfPlayers} duration={3} />
+                                            <CountUp end={numOfEntries} duration={3} />
                                         </span>
                                     </Col>
                                     <Col className="item" sm={12} md={4}>

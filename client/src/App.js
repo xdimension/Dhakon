@@ -5,7 +5,7 @@ import { Web3Provider } from "./components/Web3Provider"
 import { NavBar } from "./components/NavBar"
 import { Banner } from "./components/Banner"
 import { Stats } from "./components/Stats"
-import { PlayersContainer } from "./components/PlayersContainer"
+import { EntriesContainer } from "./components/EntriesContainer"
 import { MailchimpForm } from "./components/MailchimpForm"
 import { Contact } from "./components/Contact"
 import { Footer } from "./components/Footer"
@@ -22,7 +22,7 @@ function App() {
           <Banner />
 
           <Stats />
-          <PlayersContainer />
+          <EntriesContainer />
           <MailchimpForm /> 
 
           <Contact />
