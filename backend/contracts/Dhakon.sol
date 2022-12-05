@@ -25,6 +25,7 @@ contract Dhakon is VRFV2WrapperConsumerBase {
     mapping(uint => address) public playerTickets;   // ticket number => player's address
 
     struct Winner {
+        uint16 round;
         uint ticket;
         address player;
         uint randRequestId;         // Randomness requestId
@@ -35,7 +36,7 @@ contract Dhakon is VRFV2WrapperConsumerBase {
     
     bool internal isPickingWinner;
     bool public isPausing;  // not accepting players when pausing
-    uint32 public currentRound = 0;
+    uint16 public currentRound = 0;
     uint public roundEndsAt;
 
     uint32 internal callbackGasLimit;
@@ -44,7 +45,7 @@ contract Dhakon is VRFV2WrapperConsumerBase {
     uint public lastRequestId;
 
     event NewPlayerEntered(uint indexed ticket, address indexed player);
-    event RoundStarted(uint32 indexed round, uint roundEndsAt);
+    event RoundStarted(uint16 indexed round, uint roundEndsAt);
     event WinnerChosen(uint indexed ticket, address player);
     event WinnerPaid(uint indexed ticket, address player, uint paidAt);
 
@@ -80,6 +81,7 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         uint index = randomness[0] % tickets.length;
         uint ticketNum = tickets[index].num;
         Winner memory winner = Winner(
+            currentRound + 1,
             ticketNum, 
             playerTickets[ticketNum],
             requestId,
@@ -111,7 +113,7 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         return lastWinners;
     }
 
-    function getWinnerByRound(uint _round) public view returns (Winner memory) {
+    function getWinnerByRound(uint16 _round) public view returns (Winner memory) {
         if (_round == 0) {
             _round = currentRound + 1;
         }
