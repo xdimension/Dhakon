@@ -104,6 +104,7 @@ contract("MockDhakon", async(accounts) => {
     await dhakon.setRoundEndsAt(Math.floor(new Date().getTime() / 1000));
 
     // let's become God who determines the future
+    // the winning ticket is the second entry, selected in mocked contract
     let ticket = await dhakon.tickets(1);
     assert.ok(ticket, "Cannot get the ticket");
 
@@ -116,6 +117,16 @@ contract("MockDhakon", async(accounts) => {
 
     assert.equal(winner.ticket, winningTicket, "Winning ticket is not correct");
     assert.equal(winner.player, winningPlayer, "Winning player is not correct");
+  })
+
+  it("getWinners should return correct result", async() => {
+    const dhakon = await MockDhakon.deployed();
+
+    // the winning ticket is the second entry, selected in mocked contract
+    let ticket = await dhakon.tickets(1);
+    let lastWinners = await dhakon.getWinners(1);
+
+    assert.equal(lastWinners[0].ticket, ticket.num, "Winners[0].ticket is not correct")
   })
 
   it("should be able to pay the winner", async() => {

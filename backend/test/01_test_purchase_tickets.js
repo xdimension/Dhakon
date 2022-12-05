@@ -49,6 +49,33 @@ contract("Dhakon", (accounts) => {
     assert.equal(player, accounts[1], "Player's address is not correct");
   })
 
+  it("getPlayers should return correct result", async() => {
+    const dhakon = await Dhakon.deployed();
+
+    let players = await dhakon.getPlayers(10);
+    assert.equal(players[0], accounts[1], "Players[0] is not correct");
+    assert.equal(players[1], accounts[0], "Players[1] is not correct");
+  })
+
+  it("getTickets should return correct result", async() => {
+    const dhakon = await Dhakon.deployed();
+
+    let ticketPromises = [dhakon.tickets(0), dhakon.tickets(1)];
+    
+    Promise.all(ticketPromises)
+    .then(async(r) => {
+      let tickets = [...r];
+      
+      let lastTickets = await dhakon.getTickets(10);
+
+      assert.equal(lastTickets[0].num, tickets[1].num, "Tickets[0].num is not correct");
+      assert.equal(lastTickets[1].num, tickets[0].num, "Tickets[1].num is not correct");
+
+      assert.equal(lastTickets[0].player, accounts[1], "Tickets[0].player is not correct");
+      assert.equal(lastTickets[1].player, accounts[0], "Tickets[1].player is not correct");
+    })
+  })
+
   it("should have the correct balance", async() => {
     const dhakon = await Dhakon.deployed();
     const bal = await web3.eth.getBalance(dhakon.address);
