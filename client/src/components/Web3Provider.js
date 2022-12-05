@@ -42,9 +42,7 @@ export function Web3Provider({children})
         try {
             const web3 = new Web3(window.ethereum)
             setWeb3(web3)
-            
-            const vmContract = contract(web3)
-            setVmContract(vmContract)
+            setVmContract(await contract(web3))
 
         } catch(err) {
             console.log(err.message)

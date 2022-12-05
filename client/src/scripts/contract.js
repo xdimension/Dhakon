@@ -1,8 +1,12 @@
-import jsonContract from '../contracts/MockDhakon.json';
+const getContractJson = async() => {
+  return (await import('../contracts/' + process.env.REACT_APP_CONTRACT_JSON)).default;
+}
 
-const contract = (web3) => {
+const contract = async(web3) => {
+  const contractJson = await getContractJson()
+
   return new web3.eth.Contract(
-    jsonContract.abi,
+    contractJson.abi,
     process.env.REACT_APP_CONTRACT_ADDRESS
   )
 }
