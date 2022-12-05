@@ -92,8 +92,23 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         isPickingWinner = false;
     }
 
-    function getWinners() public view returns(Winner[] memory) {
-        return winners;
+    function getWinners(uint32 limit) public view returns(Winner[] memory) {
+        require(limit > 0, "Limit should be greater than 0");
+
+        Winner[] memory lastWinners = new Winner[](limit);
+        if (winners.length == 0) {
+            return lastWinners;
+        }
+
+        uint8 idx1 = 1;
+        uint idx2 = winners.length;
+
+        while(idx1 <= limit && idx2 > 0) {
+            lastWinners[idx1-1] = winners[idx2-1];
+            idx1++; idx2--;
+        }
+
+        return lastWinners;
     }
 
     function getWinnerByRound(uint _round) public view returns (Winner memory) {
@@ -108,17 +123,16 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         return address(this).balance;
     }
 
-    function getPlayers() public view returns (address[] memory) {
-        return players;
-    }
-
-    function getLastPlayers(uint8 limit) public view returns(address[] memory) {
-        require(players.length > 0, "There is no player yet");
+    function getPlayers(uint8 limit) public view returns(address[] memory) {
         require(limit > 0, "Limit should be greater than 0");
+
+        address[] memory lastPlayers = new address[](limit);
+        if (players.length == 0) {
+            return lastPlayers;
+        }
         
         uint8 idx1 = 1;
         uint idx2 = players.length;
-        address[] memory lastPlayers = new address[](limit);
 
         while(idx1 <= limit && idx2 > 0) {
             lastPlayers[idx1-1] = players[idx2-1];
@@ -132,17 +146,16 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         return players.length;
     }
 
-    function getTickets() public view returns(Ticket[] memory) {
-        return tickets;
-    }
-
-    function getLastTickets(uint8 limit) public view returns(Ticket[] memory) {
-        require(tickets.length > 0, "There is no ticket yet");
+    function getTickets(uint8 limit) public view returns(Ticket[] memory) {
         require(limit > 0, "Limit should be greater than 0");
+
+        Ticket[] memory lastTickets = new Ticket[](limit);
+        if (tickets.length == 0) {
+            return lastTickets;
+        }
         
         uint8 idx1 = 1;
         uint idx2 = tickets.length;
-        Ticket[] memory lastTickets = new Ticket[](limit);
 
         while(idx1 <= limit && idx2 > 0) {
             lastTickets[idx1-1] = tickets[idx2-1];
