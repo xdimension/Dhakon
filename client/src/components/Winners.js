@@ -5,8 +5,6 @@ import { Web3Context } from "./Web3Provider";
 
 export function Winners() 
 {
-    let round = 1;
-
     const { vmContract, refresh } = useContext(Web3Context)
     
     const [winners, setWinners] = useState([])
@@ -37,8 +35,8 @@ export function Winners()
                 <tbody>
                     {winners.map((winner) => {
                         return (
-                            <tr key={round++}>
-                                <td>{round}</td>
+                            <tr key={winner.round}>
+                                <td>{winner.round}</td>
                                 <td>{truncateEthAddress(winner.player)}</td>
                             </tr>
                         )
