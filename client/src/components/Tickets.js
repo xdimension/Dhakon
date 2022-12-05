@@ -15,7 +15,7 @@ export function Tickets()
 
     const getTickets = async() => {
         if (vmContract) {
-            let tickets = await vmContract.methods.getLastTickets(10).call()
+            let tickets = await vmContract.methods.getTickets(10).call()
             tickets = tickets.filter((ticket) => ticket.time != 0);
             const numOfTickets = await vmContract.methods.getNumOfTickets().call()
             

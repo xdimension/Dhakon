@@ -15,7 +15,8 @@ export function Players()
 
     const getPlayers = async() => {
         if (vmContract) {
-            const players = await vmContract.methods.getLastPlayers(10).call()
+            let players = await vmContract.methods.getPlayers(10).call()
+            players = players.filter((player) => player != 0);
             const numOfPlayers = await vmContract.methods.getNumOfPlayers().call()
             
             setPlayers(players)

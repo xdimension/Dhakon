@@ -13,7 +13,8 @@ export function Winners()
 
     const getWinners = async() => {
         if (vmContract) {
-            const winners = await vmContract.methods.getWinners().call()
+            let winners = await vmContract.methods.getWinners(10).call()
+            winners = winners.filter((winner) => winner.ticket != 0);
             setWinners(winners)
         }
     }
