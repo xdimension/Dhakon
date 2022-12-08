@@ -37,15 +37,21 @@ export function Web3Provider({children})
     }, [vmContract, address])
 
     const initializeWeb3 = useCallback(async() => {
-        console.log('Initializing Web3')
+        if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
+            console.log('Initializing Web3')
 
-        try {
-            const web3 = new Web3(window.ethereum)
-            setWeb3(web3)
-            setVmContract(await contract(web3))
+            try {
+                const web3 = new Web3(window.ethereum)
+                setWeb3(web3)
+                setVmContract(await contract(web3))
 
-        } catch(err) {
-            console.log(err.message)
+            } catch(err) {
+                console.log(err.message)
+            }
+        } else {
+            // MetaMask required
+            alert('Please install MetaMask wallet first')
+            window.open("https://metamask.io", "_blank")
         }
     }, [])
 
@@ -62,13 +68,7 @@ export function Web3Provider({children})
     const greet = async() => { alert('hello') }
 
     useEffect(() => {
-        if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
-            initializeWeb3()
-        } else {
-            // MetaMask required
-            alert('Please install MetaMask wallet first')
-            window.open("https://metamask.io", "_blank")
-        }
+        initializeWeb3()
     }, [])
 
     useEffect(() => {
