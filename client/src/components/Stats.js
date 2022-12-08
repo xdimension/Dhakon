@@ -1,21 +1,38 @@
-import { useContext } from "react"
+import { useContext, useState, useEffect, useCallback } from "react"
 import { Row, Col } from "react-bootstrap"
 import TrackVisibility from "react-on-screen"
 import colorSharp from "../assets/img/color-sharp.png"
 import CountUp from "react-countup"
+import CountDown from "react-countdown"
+import { zeroPad } from "react-countdown"
 import { GameContext } from "./GameProvider"
 
 export function Stats() 
 {
     const { balance, gameRound, roundEndsAt, numOfEntries } = useContext(GameContext)
 
-    let startingDays = 0;
-    let remainingDays = 0;
+    let [roundEnds, setRoundEnds] = useState(0)
+    let [remainingTime, setRemainingTime] = useState(0)
+    let [remainingDays, setRemainingDays] = useState(0)
 
-    if (roundEndsAt > 0) {
-        startingDays = 90;
-        remainingDays =  parseInt((new Date(roundEndsAt * 1000) - (new Date()))  / (1000 * 3600 * 24));
-    }
+    const renderer = ({
+        formatted: { hours, minutes, seconds }
+    }) => (
+        <span>
+          {zeroPad(hours)}:{zeroPad(minutes)}:{zeroPad(seconds)}
+        </span>
+    )
+
+    useEffect(() => {
+        if (roundEndsAt > 0) {
+            let roundEnds = roundEndsAt * 1000;
+            setRoundEnds(roundEnds);
+
+            remainingTime =  new Date(roundEnds) - Date.now();
+            setRemainingTime(remainingTime)
+            setRemainingDays(parseInt(remainingTime / (1000 * 3600 * 24)));
+        }
+    }, [roundEndsAt])
 
     return (
         <section className="stat" id="stats">
@@ -42,9 +59,13 @@ export function Stats()
                                         </span>
                                     </Col>
                                     <Col className="item" sm={12} md={4}>
-                                        <h5>Remaining Days</h5>
+                                        <h5>Remaining Time</h5>
                                         <span className="counter">
-                                            <CountUp start={startingDays} end={remainingDays} duration={3} />
+                                        {
+                                            remainingTime > (1000 * 3600 * 24)?
+                                            <CountUp start={roundEndsAt>0? 90: 0} end={remainingDays} duration={3} formattingFn={num => (num>1? `${num} Days` : `${num} Day`)} /> :
+                                            <CountDown daysInHours key={roundEnds} date={roundEnds} renderer={renderer} /> 
+                                        }
                                         </span>
                                     </Col>
                                 </Row>)}
