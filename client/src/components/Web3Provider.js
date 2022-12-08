@@ -12,6 +12,7 @@ export const Web3Context = createContext({
 export function Web3Provider({children}) 
 {
     const [web3, setWeb3] = useState()
+    const [hasWallet, setHasWallet] = useState(true)
     const [vmContract, setVmContract] = useState()
     const [address, setAddress] = useState()
     const [isOwner, setIsOwner] = useState()
@@ -49,9 +50,8 @@ export function Web3Provider({children})
                 console.log(err.message)
             }
         } else {
-            // MetaMask required
-            alert('Please install MetaMask wallet first')
-            window.open("https://metamask.io", "_blank")
+            // A wallet is required
+            setHasWallet(false)
         }
     }, [])
 
@@ -72,10 +72,12 @@ export function Web3Provider({children})
     }, [])
 
     useEffect(() => {
-        window.ethereum.on('accountsChanged', onAccountsChanged);
+        if (window.ethereum) {
+            window.ethereum.on('accountsChanged', onAccountsChanged);
 
-        return () => {
-            window.ethereum.removeListener('accountsChanged', onAccountsChanged)
+            return () => {
+                window.ethereum.removeListener('accountsChanged', onAccountsChanged)
+            }
         }
     }, [vmContract, address])
 
@@ -83,6 +85,7 @@ export function Web3Provider({children})
         <Web3Context.Provider
             value={{
                 web3,
+                hasWallet,
                 vmContract,
                 connectToWallet,
                 address,
