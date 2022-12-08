@@ -2,6 +2,7 @@ import "./App.css"
 import "bootstrap/dist/css/bootstrap.min.css"
 
 import { Web3Provider } from "./components/Web3Provider"
+import { StatusBar } from "./components/StatusBar"
 import { NavBar } from "./components/NavBar"
 import { Banner } from "./components/Banner"
 import { Stats } from "./components/Stats"
@@ -17,8 +18,8 @@ function App() {
     <Web3Provider>
       <GameProvider>
         <div className="App">
+          <StatusBar />
           <NavBar />
-          
           <Banner />
 
           <Stats />
