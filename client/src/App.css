@@ -81,6 +81,11 @@ p.success {
 p.danger {
 	color: red;
 }
+
+.outer-wrapper {
+  position:relative;
+}
+
 /************ Statusbar Css ************/
 .top-status-bar {
   padding: 10px 0;
@@ -88,6 +93,7 @@ p.danger {
   font-weight: 500; 
   color: #FFF;
   background-color: #8b0000;
+  position:relative;
 }
 .top-status-bar a,
 .top-status-bar a:hover {
@@ -98,16 +104,16 @@ p.danger {
 
 /************ Navbar Css ************/
 nav.navbar {
-  position:fixed;
+  position:absolute;
+  top: 0;
   padding: 18px 0;
   width: 100%;
-  top: 30px;
   z-index: 999;
   transition:  0.32s ease-in-out;
   opacity: 88%;
 }
 nav.navbar.scrolled {
-  top:0;
+  position:fixed;
   padding: 0;
   background-color: #121212;
 }

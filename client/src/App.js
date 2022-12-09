@@ -19,15 +19,17 @@ function App() {
       <GameProvider>
         <div className="App">
           <StatusBar />
-          <NavBar />
-          <Banner />
+          <section className="outer-wrapper">
+            <NavBar />
+            <Banner />
 
-          <Stats />
-          <EntriesContainer />
-          <MailchimpForm /> 
+            <Stats />
+            <EntriesContainer />
+            <MailchimpForm /> 
 
-          <Contact />
-          <Footer />
+            <Contact />
+            <Footer />
+          </section>
         </div>
       </GameProvider>
     </Web3Provider>

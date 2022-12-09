@@ -14,7 +14,7 @@ export const NavBar = () => {
   const [activeLink, setActiveLink] = useState('home');
   const [scrolled, setScrolled] = useState(false);
 
-  const { hasWallet, isOwner } = useContext(Web3Context)
+  const { isOwner } = useContext(Web3Context)
   const { pickWinner, payWinner } = useContext(GameContext)
   
   useEffect(() => {
@@ -37,7 +37,7 @@ export const NavBar = () => {
 
   return (
     <Router>
-      <Navbar expand="md" className={scrolled ? "scrolled" : ""} style={hasWallet? {top:0}:{}}>
+      <Navbar expand="md" className={scrolled ? "scrolled" : ""}>
         <Container>
           <Navbar.Brand href="/">
             <img src={logo} alt="Logo" />
