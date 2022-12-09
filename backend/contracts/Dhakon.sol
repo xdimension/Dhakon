@@ -240,7 +240,7 @@ contract Dhakon is VRFV2WrapperConsumerBase {
 
         emit WinnerPaid(ticketNum, player, paidAt);
         
-        // reset the state of the contract
+        // reset the state of the contract for new round
         resetRound();
     }
 
@@ -271,10 +271,6 @@ contract Dhakon is VRFV2WrapperConsumerBase {
 
     function setIsPausing(bool _val) external onlyOwner {
         isPausing = _val;
-    }
-
-    function setRoundEndsAt(uint _timestamp) external onlyOwner {
-        roundEndsAt = _timestamp;
     }
 
     function getCallbackGasLimit() external view returns(uint32) {
