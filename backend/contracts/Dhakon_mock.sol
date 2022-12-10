@@ -11,7 +11,7 @@ contract MockDhakon is Dhakon {
         address _wrapperAddress, 
         uint32 _callbackGasLimit,
         uint _ticketPrice,
-        uint16 _roundDays,
+        uint8 _roundDays,
         uint16 _commissionPct
     ) Dhakon(
         _linkAddress, 
