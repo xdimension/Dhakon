@@ -378,7 +378,7 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
 
 /************ Contact Css ************/
 .contact {
-  background: linear-gradient(90.21deg, #AA367C -5.91%, #4A2FBD 111.58%);
+  background: linear-gradient(150deg, #7a1ee3 30%, #0f6f80 80%);
   padding: 60px 0 60px 0;
 }
 .contact img {
@@ -474,7 +474,7 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
 }
 .new-email-bx::before {
   content: "";
-  background: linear-gradient(90.21deg, #AA367C -5.91%, #4A2FBD 111.58%);
+  border: 1px solid #5022b3;
   border-radius: 20px;
   position: absolute;
   z-index: -1;
@@ -503,7 +503,7 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
   padding: 0 15px;
 }
 .new-email-bx button {
-  background: linear-gradient(90.21deg, #AA367C -5.91%, #4A2FBD 111.58%);
+  background: linear-gradient(150deg, #5b16a9 40%, #5022b3 80%);
   padding: 20px 65px;
   color: #fff;
   font-weight: 500;
