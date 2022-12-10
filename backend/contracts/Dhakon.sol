@@ -9,7 +9,7 @@ contract Dhakon is VRFV2WrapperConsumerBase {
     address owner;
 
     uint immutable public ticketPrice;
-    uint8 immutable public roundDays;
+    uint8 public roundDays;
     uint16 immutable public commissionPct;
 
     address[] public players;
@@ -263,6 +263,10 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         require(balance > 0, "LINK Balance is 0");
         
         LINK.transfer(owner, balance);
+    }
+
+    function setRoundDays(uint8 _roundDays) external onlyOwner {
+        roundDays = _roundDays;
     }
 
     function setIsPickingWinner(bool _val) external onlyOwner {
