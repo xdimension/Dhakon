@@ -9,7 +9,7 @@ contract Dhakon is VRFV2WrapperConsumerBase {
     address owner;
 
     uint immutable public ticketPrice;
-    uint16 immutable public roundDays;
+    uint8 immutable public roundDays;
     uint16 immutable public commissionPct;
 
     address[] public players;
@@ -54,7 +54,7 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         address _wrapperAddress,
         uint32 _callbackGasLimit, 
         uint _ticketPrice,
-        uint16 _roundDays,
+        uint8 _roundDays,
         uint16 _commissionPct
     )
     VRFV2WrapperConsumerBase(
