@@ -115,6 +115,9 @@ nav.navbar {
 nav.navbar.scrolled {
   position:fixed;
   padding: 0;
+}
+nav.navbar.scrolled, 
+nav.navbar:has(.navbar-collapse.show) {
   background-color: #121212;
 }
 nav.navbar a.navbar-brand {
@@ -256,11 +259,16 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
 /************ Banner Css ************/
 .banner {
   margin-top: 0;
-  padding: 260px 0 100px 0;
+  padding: 210px 82px 140px;
   background-image: url('./assets/img/banner5-bg.jpg');
   background-position: top center;
   background-size: cover;
   background-repeat: no-repeat;
+}
+@media all and (max-width: 767px) {
+  .banner {
+    padding: 100px 20px 100px;
+  }
 }
 .banner .tagline {
   font-weight: 700;
@@ -379,10 +387,7 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
 /************ Contact Css ************/
 .contact {
   background: linear-gradient(150deg, #7a1ee3 30%, #0f6f80 80%);
-  padding: 60px 0 60px 0;
-}
-.contact img {
-  width: 92%;
+  padding: 60px 20px;
 }
 .contact h2 {
 	font-size: 45px;
@@ -453,9 +458,8 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
   background: #FFFFFF;
   border-radius: 55px;
   color: #121212;
-  padding: 85px 125px;
-  margin-bottom: 80px;
-  margin-top: 50px;
+  padding: 75px 60px;
+  margin: 50px 20px 80px;
 }
 .newsletter-bx h3 {
   font-weight: 700;
