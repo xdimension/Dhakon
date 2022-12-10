@@ -16,17 +16,17 @@ contract Dhakon is VRFV2WrapperConsumerBase {
     mapping(address => bool) checkPlayers;
 
     struct Ticket {
-        uint num;
+        uint32 num;
         uint time;
         address player;
     }
 
     Ticket[] public tickets;
-    mapping(uint => address) public playerTickets;   // ticket number => player's address
+    mapping(uint32 => address) public playerTickets;   // ticket number => player's address
 
     struct Winner {
         uint16 round;
-        uint ticket;
+        uint32 ticket;
         address player;
         uint randRequestId;         // Randomness requestId
         uint paidAt;
@@ -44,10 +44,10 @@ contract Dhakon is VRFV2WrapperConsumerBase {
 
     uint public lastRequestId;
 
-    event NewPlayerEntered(uint indexed ticket, address indexed player);
+    event NewPlayerEntered(uint32 indexed ticket, address indexed player);
     event RoundStarted(uint16 indexed round, uint roundEndsAt);
-    event WinnerChosen(uint indexed ticket, address player);
-    event WinnerPaid(uint indexed ticket, address player, uint paidAt);
+    event WinnerChosen(uint32 indexed ticket, address player);
+    event WinnerPaid(uint32 indexed ticket, address player, uint paidAt);
 
     constructor(
         address _linkAddress, 
@@ -79,7 +79,7 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         require(randomness[0] != 0, "Problem in getting randomness");
 
         uint index = randomness[0] % tickets.length;
-        uint ticketNum = tickets[index].num;
+        uint32 ticketNum = tickets[index].num;
         Winner memory winner = Winner(
             currentRound + 1,
             ticketNum, 
@@ -179,7 +179,7 @@ contract Dhakon is VRFV2WrapperConsumerBase {
     }
 
     function newTicket(address player) internal view returns (Ticket memory) {
-        uint ticketNum = uint(keccak256(abi.encodePacked(owner, block.timestamp)));
+        uint32 ticketNum = uint32(uint256(keccak256(abi.encodePacked(owner, block.timestamp))));
         return Ticket(
             ticketNum,
             block.timestamp,
@@ -225,7 +225,7 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         uint balance = address(this).balance;
         require(balance > 0, "The pot is empty");
 
-        uint ticketNum = winners[currentRound].ticket;
+        uint32 ticketNum = winners[currentRound].ticket;
         address payable player = payable(playerTickets[ticketNum]);
         address payable holder = payable(owner);
         uint paidAt = block.timestamp;
