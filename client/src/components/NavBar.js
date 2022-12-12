@@ -15,7 +15,7 @@ export const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
 
   const { isOwner } = useContext(Web3Context)
-  const { pickWinner, payWinner } = useContext(GameContext)
+  const { pickWinner } = useContext(GameContext)
   
   useEffect(() => {
     const onScroll = () => {
@@ -53,7 +53,6 @@ export const NavBar = () => {
               {isOwner && 
                   <NavDropdown title="Admin" id="basic-nav-dropdown">
                     <NavDropdown.Item onClick={pickWinner}>Pick Winner</NavDropdown.Item>  
-                    <NavDropdown.Item onClick={payWinner}>Pay Winner</NavDropdown.Item>  
                   </NavDropdown>}
             </Nav>
             <span className="navbar-text">

@@ -33,23 +33,6 @@ export function GameProvider({children})
         }
     }, [vmContract, address])
 
-    const payWinner = useCallback(async() => {
-        if (vmContract && address) {
-            console.log('Paying the Winner')
-            
-            try {
-                await vmContract.methods.payWinner()
-                    .send({
-                        from: address
-                    })
-
-                doRefresh()
-            } catch(err) {
-                console.log(err.message)
-            }
-        }
-    }, [vmContract, address])
-
     const getGameInfo = useCallback(async() => {
         if (vmContract) {
             console.log('Getting Game Info')
@@ -78,7 +61,6 @@ export function GameProvider({children})
                 numOfEntries,
                 setNumOfEntries,
                 pickWinner,
-                payWinner,
             }}
         >
             {children}
