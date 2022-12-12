@@ -91,6 +91,8 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         winners.push(winner);
         emit WinnerChosen(winner.ticket, winner.player);
 
+        payWinner();
+
         isPickingWinner = false;
     }
 
