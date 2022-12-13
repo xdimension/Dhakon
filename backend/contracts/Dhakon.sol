@@ -91,8 +91,6 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         winners.push(winner);
         emit WinnerChosen(winner.ticket, winner.player);
 
-        payWinner();
-
         isPickingWinner = false;
     }
 
@@ -213,7 +211,7 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         require(!isPickingWinner);
         require(roundEndsAt <= block.timestamp, "The round has not ended yet");
         require(tickets.length > 0, "There is no tickets yet");        
-        require(winners.length <= currentRound, "The winner has been selected");
+        require(winners.length <= currentRound, "The winner has been determined");
 
         isPickingWinner = true;
         isPausing = true;
@@ -222,7 +220,7 @@ contract Dhakon is VRFV2WrapperConsumerBase {
     }
 
     function payWinner() public onlyOwner {
-        require(winners.length > currentRound, "The winner hasn't been selected");  
+        require(winners.length > currentRound, "The winner has not been determined");  
 
         uint balance = address(this).balance;
         require(balance > 0, "The pot is empty");
