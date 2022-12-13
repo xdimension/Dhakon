@@ -113,6 +113,11 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         return lastWinners;
     }
 
+    function getNumOfWinners() public view returns(uint)
+    {
+        return winners.length;
+    }
+
     function getWinnerByRound(uint16 _round) public view returns (Winner memory) {
         if (_round == 0) {
             _round = currentRound + 1;
