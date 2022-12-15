@@ -32,8 +32,4 @@ contract MockDhakon is Dhakon {
         fulfillRandomWords(requestId, randomness);  // select 2nd ticket as the winner
     }
 
-    function setRoundEndsAt(uint _timestamp) external onlyOwner {
-        roundEndsAt = _timestamp;
-    }
-
 } 

@@ -3,9 +3,9 @@
 pragma solidity ^0.8.11;
 
 import "@chainlink/contracts/src/v0.8/VRFV2WrapperConsumerBase.sol";
+import "@chainlink/contracts/src/v0.8/AutomationCompatible.sol";
 
-
-contract Dhakon is VRFV2WrapperConsumerBase {
+contract Dhakon is VRFV2WrapperConsumerBase, AutomationCompatibleInterface {
     address owner;
 
     uint immutable public ticketPrice;
@@ -69,6 +69,32 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         commissionPct = _commissionPct;
     }
 
+    function checkUpkeep(bytes calldata checkData) external view override
+        returns (bool upkeepNeeded, bytes memory performData)
+    {
+        if (keccak256(checkData) == keccak256(hex'01')) {
+            upkeepNeeded = winners.length <= currentRound && roundEndsAt <= block.timestamp;
+            performData = checkData;
+            
+        } else if (keccak256(checkData) == keccak256(hex'02')) {
+            upkeepNeeded = winners.length > currentRound;
+            performData = checkData;
+        }
+    }
+
+    function performUpkeep(bytes calldata performData) external override 
+    {
+        if (keccak256(performData) == keccak256(hex'01')) {
+            assert(winners.length <= currentRound && roundEndsAt <= block.timestamp);
+            require(!isPickingWinner);
+            pickWinner();
+
+        } else if (keccak256(performData) == keccak256(hex'02')) {
+            assert(winners.length > currentRound);
+            payWinner();
+        }
+    }
+
     function getRandomNumber() internal virtual {
         uint requestId = requestRandomness(callbackGasLimit, REQUEST_CONFIRMATIONS, 1);    
         lastRequestId = requestId;
@@ -113,8 +139,7 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         return lastWinners;
     }
 
-    function getNumOfWinners() public view returns(uint)
-    {
+    function getNumOfWinners() public view returns(uint) {
         return winners.length;
     }
 
@@ -212,7 +237,7 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         }
     }
 
-    function pickWinner() public onlyOwner {
+    function pickWinner() public {
         require(!isPickingWinner);
         require(roundEndsAt <= block.timestamp, "The round has not ended yet");
         require(tickets.length > 0, "There is no tickets yet");        
@@ -224,7 +249,7 @@ contract Dhakon is VRFV2WrapperConsumerBase {
         getRandomNumber();
     }
 
-    function payWinner() public onlyOwner {
+    function payWinner() public {
         require(winners.length > currentRound, "The winner has not been determined");  
 
         uint balance = address(this).balance;
@@ -272,6 +297,10 @@ contract Dhakon is VRFV2WrapperConsumerBase {
 
     function setRoundDays(uint8 _roundDays) external onlyOwner {
         roundDays = _roundDays;
+    }
+
+    function setRoundEndsAt(uint _timestamp) external onlyOwner {
+        roundEndsAt = _timestamp;
     }
 
     function setIsPickingWinner(bool _val) external onlyOwner {
