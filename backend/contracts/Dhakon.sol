@@ -73,7 +73,7 @@ contract Dhakon is VRFV2WrapperConsumerBase, AutomationCompatibleInterface {
         returns (bool upkeepNeeded, bytes memory performData)
     {
         if (keccak256(checkData) == keccak256(hex'01')) {
-            upkeepNeeded = winners.length <= currentRound && roundEndsAt <= block.timestamp;
+            upkeepNeeded = tickets.length > 0 && winners.length <= currentRound && roundEndsAt <= block.timestamp;
             performData = checkData;
             
         } else if (keccak256(checkData) == keccak256(hex'02')) {
