@@ -48,7 +48,7 @@ contract Dhakon is VRFV2WrapperConsumerBase, AutomationCompatibleInterface {
     uint public lastRequestId;
 
     event NewPlayerEntered(uint32 indexed ticket, address indexed player);
-    event RoundStarted(uint16 indexed round, uint roundEndsAt);
+    event RoundStarted(uint16 indexed round, uint8 nDays, uint endsAt);
     event WinnerChosen(uint32 indexed ticket, address player);
     event WinnerPaid(uint32 indexed ticket, address player, uint paidAt);
 
@@ -244,8 +244,9 @@ contract Dhakon is VRFV2WrapperConsumerBase, AutomationCompatibleInterface {
         if (tickets.length == 1) {
             roundEndsAt = block.timestamp + (roundDays * 1 days);
             emit RoundStarted({
-                round: currentRound + 1, 
-                roundEndsAt: roundEndsAt
+                round: currentRound + 1,
+                nDays: roundDays,
+                endsAt: roundEndsAt
             });
         }
     }
