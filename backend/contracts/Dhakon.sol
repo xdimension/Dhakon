@@ -35,6 +35,8 @@ contract Dhakon is VRFV2WrapperConsumerBase, AutomationCompatibleInterface {
     Winner[] public winners;
     
     bool internal isPickingWinner;
+    bool internal isPayingWinner;
+    
     bool public isPausing;  // not accepting players when pausing
     uint16 public currentRound = 0;
     uint public roundEndsAt;
@@ -250,8 +252,10 @@ contract Dhakon is VRFV2WrapperConsumerBase, AutomationCompatibleInterface {
     }
 
     function payWinner() public {
+        require(!isPayingWinner);
         require(winners.length > currentRound, "The winner has not been determined");  
 
+        isPayingWinner = true;
         uint balance = address(this).balance;
         require(balance > 0, "The pot is empty");
 
@@ -268,6 +272,7 @@ contract Dhakon is VRFV2WrapperConsumerBase, AutomationCompatibleInterface {
         player.transfer(playerPrize);
         holder.transfer(commissionAmt);
 
+        isPayingWinner = false;
         emit WinnerPaid(ticketNum, player, paidAt);
         
         // reset the state of the contract for new round
