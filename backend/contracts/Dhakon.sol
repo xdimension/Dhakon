@@ -36,8 +36,8 @@ contract Dhakon is VRFV2WrapperConsumerBase, AutomationCompatibleInterface {
     
     bool public isPickingWinner;
     bool public isPayingWinner;
+    bool public isPaused;  // not accepting players when paused
     
-    bool public isPausing;  // not accepting players when pausing
     uint16 public currentRound = 0;
     uint public roundEndsAt;
 
@@ -220,7 +220,7 @@ contract Dhakon is VRFV2WrapperConsumerBase, AutomationCompatibleInterface {
     }
 
     function enter() public payable {
-        require(!isPausing, "The round is not in playing mode");
+        require(!isPaused, "The round is not in playing mode");
         require(msg.value >= ticketPrice, "Value is below Ticket Price");
 
         // save new ticket entering the round
@@ -246,7 +246,7 @@ contract Dhakon is VRFV2WrapperConsumerBase, AutomationCompatibleInterface {
         require(winners.length <= currentRound, "The winner has been determined");
 
         isPickingWinner = true;
-        isPausing = true;
+        isPaused = true;
         
         getRandomNumber();
     }
@@ -290,7 +290,7 @@ contract Dhakon is VRFV2WrapperConsumerBase, AutomationCompatibleInterface {
         }
         delete tickets;
 
-        isPausing = false;
+        isPaused = false;
     }
 
     function withdrawLINKToken() external onlyOwner {
@@ -312,8 +312,8 @@ contract Dhakon is VRFV2WrapperConsumerBase, AutomationCompatibleInterface {
         isPickingWinner = _val;
     }
 
-    function setIsPausing(bool _val) external onlyOwner {
-        isPausing = _val;
+    function setIsPaused(bool _val) external onlyOwner {
+        isPaused = _val;
     }
 
     function getCallbackGasLimit() external view returns(uint32) {
