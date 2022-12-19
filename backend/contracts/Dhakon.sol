@@ -29,6 +29,7 @@ contract Dhakon is VRFV2WrapperConsumerBase, AutomationCompatibleInterface {
         uint32 ticket;
         address player;
         uint randRequestId;         // Randomness requestId
+        uint wonAt;
         uint paidAt;
     }
 
@@ -108,16 +109,20 @@ contract Dhakon is VRFV2WrapperConsumerBase, AutomationCompatibleInterface {
 
         uint index = randomness[0] % tickets.length;
         uint32 ticketNum = tickets[index].num;
-        Winner memory winner = Winner(
-            currentRound + 1,
-            ticketNum, 
-            playerTickets[ticketNum],
-            requestId,
-            0
-        );
+        Winner memory winner = Winner({
+            round: currentRound + 1,
+            ticket: ticketNum, 
+            player: playerTickets[ticketNum],
+            randRequestId: requestId,
+            wonAt: block.timestamp,
+            paidAt: 0
+        });
 
         winners.push(winner);
-        emit WinnerChosen(winner.ticket, winner.player);
+        emit WinnerChosen({
+            ticket: winner.ticket, 
+            player: winner.player
+        });
 
         isPickingWinner = false;
     }
@@ -212,11 +217,11 @@ contract Dhakon is VRFV2WrapperConsumerBase, AutomationCompatibleInterface {
 
     function newTicket(address player) internal view returns (Ticket memory) {
         uint32 ticketNum = uint32(uint256(keccak256(abi.encodePacked(owner, block.timestamp))));
-        return Ticket(
-            ticketNum,
-            block.timestamp,
-            player
-        );
+        return Ticket({
+            num: ticketNum,
+            time: block.timestamp,
+            player: player
+        });
     }
 
     function enter() public payable {
@@ -230,12 +235,18 @@ contract Dhakon is VRFV2WrapperConsumerBase, AutomationCompatibleInterface {
         playerTickets[ticket.num] = player;
 
         addPlayer(player);
-        emit NewPlayerEntered(ticket.num, ticket.player);
+        emit NewPlayerEntered({
+            ticket: ticket.num, 
+            player: ticket.player
+        });
 
         // start the round when first ticket is added
         if (tickets.length == 1) {
             roundEndsAt = block.timestamp + (roundDays * 1 days);
-            emit RoundStarted(currentRound + 1, roundEndsAt);
+            emit RoundStarted({
+                round: currentRound + 1, 
+                roundEndsAt: roundEndsAt
+            });
         }
     }
 
@@ -273,7 +284,11 @@ contract Dhakon is VRFV2WrapperConsumerBase, AutomationCompatibleInterface {
         holder.transfer(commissionAmt);
 
         isPayingWinner = false;
-        emit WinnerPaid(ticketNum, player, paidAt);
+        emit WinnerPaid({
+            ticket: ticketNum, 
+            player: player, 
+            paidAt: paidAt
+        });
         
         // reset the state of the contract for new round
         resetRound();
@@ -315,7 +330,7 @@ contract Dhakon is VRFV2WrapperConsumerBase, AutomationCompatibleInterface {
     function setIsPaused(bool _val) external onlyOwner {
         isPaused = _val;
     }
-    
+
     function setCallbackGasLimit(uint32 _val) external onlyOwner {
         callbackGasLimit = _val;
     }
