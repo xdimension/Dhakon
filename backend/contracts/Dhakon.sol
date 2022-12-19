@@ -34,8 +34,8 @@ contract Dhakon is VRFV2WrapperConsumerBase, AutomationCompatibleInterface {
 
     Winner[] public winners;
     
-    bool internal isPickingWinner;
-    bool internal isPayingWinner;
+    bool public isPickingWinner;
+    bool public isPayingWinner;
     
     bool public isPausing;  // not accepting players when pausing
     uint16 public currentRound = 0;
