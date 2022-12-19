@@ -41,7 +41,7 @@ contract Dhakon is VRFV2WrapperConsumerBase, AutomationCompatibleInterface {
     uint16 public currentRound = 0;
     uint public roundEndsAt;
 
-    uint32 internal callbackGasLimit;
+    uint32 public callbackGasLimit;
     uint16 constant REQUEST_CONFIRMATIONS = 3;
 
     uint public lastRequestId;
@@ -315,11 +315,7 @@ contract Dhakon is VRFV2WrapperConsumerBase, AutomationCompatibleInterface {
     function setIsPaused(bool _val) external onlyOwner {
         isPaused = _val;
     }
-
-    function getCallbackGasLimit() external view returns(uint32) {
-        return callbackGasLimit;
-    }
-
+    
     function setCallbackGasLimit(uint32 _val) external onlyOwner {
         callbackGasLimit = _val;
     }
