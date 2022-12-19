@@ -345,6 +345,10 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
   font-size: 1.65em;
   margin-bottom: 17px;
 }
+.view-trx img {
+  width: 16px;
+  filter: invert(1);
+}
 
 /************ Stats Css ************/
 .stat {
