@@ -63,7 +63,7 @@ export function Stats()
                                         <span className="counter">
                                         {
                                             remainingTime > (1000 * 3600 * 24)?
-                                            <CountUp start={roundEndsAt>0? 255: 0} end={remainingDays} duration={3} formattingFn={num => (num>1? `${num} Days` : `${num} Day`)} /> :
+                                            <CountUp start={roundEndsAt>0? 100 : 0} end={remainingDays} duration={3} formattingFn={num => (num>1? `${num} Days` : `${num} Day`)} /> :
                                             <CountDown daysInHours key={roundEnds} date={roundEnds} renderer={renderer} /> 
                                         }
                                         </span>
