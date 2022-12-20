@@ -29,7 +29,7 @@ export function Tickets()
     }
 
     const getTrx = async (ticketNums) => {
-        if (vmContract) {
+        if (vmContract && ticketNums.length > 0) {
             let trx = await vmContract.getPastEvents('NewPlayerEntered', {
                 filter: { ticket: ticketNums },
                 fromBlock: 0,
@@ -38,7 +38,7 @@ export function Tickets()
 
             setTrx(trx)
         }
-    } 
+    }
 
     useEffect(() => {
         getTickets()
