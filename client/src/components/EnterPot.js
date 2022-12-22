@@ -1,12 +1,12 @@
 import { useContext } from "react"
-import { ArrowRightCircle } from 'react-bootstrap-icons';
-import { GameContext } from "./GameProvider";
+import { ArrowRightCircle } from 'react-bootstrap-icons'
+import { GameContext } from "./GameProvider"
 import { Web3Context } from "./Web3Provider"
 
 export function EnterPot() 
 {
     let { web3, vmContract, address, doRefresh } = useContext(Web3Context)
-    let { numOfEntries, roundEndsAt } = useContext(GameContext)
+    let { config, numOfEntries, roundEndsAt } = useContext(GameContext)
 
     const enterPotHandler = async() => {
 
@@ -24,7 +24,7 @@ export function EnterPot()
                 await vmContract.methods.enter()
                     .send({
                         from: address,
-                        value: web3.utils.toWei('0.1', 'ether')
+                        value: web3.utils.toWei(config.ticketPrice.toString(), config.currency.unit)
                     })
 
                 doRefresh()
