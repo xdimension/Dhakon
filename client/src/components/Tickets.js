@@ -7,12 +7,10 @@ import viewTrxIcon from '../assets/img/view-trx-icon.svg'
 
 export function Tickets() 
 {
-    const TRX_EXPLORER_LINK = process.env.REACT_APP_TRX_EXPLORER_LINK;
-
     let num = 1;
 
     const { vmContract, refresh } = useContext(Web3Context)
-    const { setNumOfEntries } = useContext(GameContext)
+    const { config, setNumOfEntries } = useContext(GameContext)
     
     const [tickets, setTickets] = useState([])
     const [trx, setTrx] = useState([])
@@ -70,7 +68,7 @@ export function Tickets()
                                 <td>{(new Date(ticket.time * 1000)).toLocaleString()}</td>
                                 <td>{truncateEthAddress(ticket.player)}</td>
                                 <td>
-                                    <a className="view-trx" href={TRX_EXPLORER_LINK+trxHash} target='_blank'>
+                                    <a className="view-trx" href={config.token.explorerUrl+trxHash} target='_blank'>
                                         <img src={viewTrxIcon} alt="" />
                                     </a>
                                 </td>

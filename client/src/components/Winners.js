@@ -2,13 +2,13 @@ import { useState, useContext, useEffect } from "react";
 import { Table } from "react-bootstrap";
 import truncateEthAddress from "truncate-eth-address";
 import { Web3Context } from "./Web3Provider";
+import { GameContext } from "./GameProvider";
 import viewTrxIcon from '../assets/img/view-trx-icon.svg'
 
 export function Winners() 
 {
-    const TRX_EXPLORER_LINK = process.env.REACT_APP_TRX_EXPLORER_LINK;
-
     const { vmContract, refresh } = useContext(Web3Context)
+    const { config } = useContext(GameContext)
     
     const [winners, setWinners] = useState([])
     const [trx, setTrx] = useState([])
@@ -63,7 +63,7 @@ export function Winners()
                                 <td>{winner.round}</td>
                                 <td>{truncateEthAddress(winner.player)}</td>
                                 <td>
-                                    <a className="view-trx" href={TRX_EXPLORER_LINK+trxHash} target='_blank'>
+                                    <a className="view-trx" href={config.token.explorerUrl+trxHash} target='_blank'>
                                         <img src={viewTrxIcon} alt="" />
                                     </a>
                                 </td>
