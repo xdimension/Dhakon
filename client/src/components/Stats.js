@@ -50,7 +50,7 @@ export function Stats()
                                     <Col className="item" sm={12} md={4}>
                                         <h5>In the Pot</h5>
                                         <span className="counter">
-                                            <CountUp end={balance} decimals={2} duration={2} /> {config.currency.shortName}
+                                            <CountUp end={balance} decimals={2} duration={2} /> {config.token.unitName}
                                         </span>
                                     </Col>
                                     <Col className="item" sm={12} md={4}>
