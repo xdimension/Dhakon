@@ -24,7 +24,7 @@ export function EnterPot()
                 await vmContract.methods.enter()
                     .send({
                         from: address,
-                        value: web3.utils.toWei(config.ticketPrice.toString(), config.currency.unit)
+                        value: web3.utils.toWei(config.ticketPrice.toString(), 'ether')
                     })
 
                 doRefresh()
