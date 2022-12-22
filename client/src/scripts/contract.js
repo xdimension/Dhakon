@@ -2,7 +2,7 @@ const getContractJson = async() => {
   return (await import('../contracts/' + process.env.REACT_APP_CONTRACT_JSON)).default;
 }
 
-const contract = async(web3) => {
+const Contract = async(web3) => {
   const contractJson = await getContractJson()
 
   return new web3.eth.Contract(
@@ -11,4 +11,4 @@ const contract = async(web3) => {
   )
 }
   
-export default contract
+export default Contract

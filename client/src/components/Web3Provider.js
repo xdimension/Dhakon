@@ -1,6 +1,6 @@
 import { createContext, useState, useCallback, useEffect } from "react"
 import Web3 from "web3"
-import contract from "../scripts/contract"
+import Contract from "../scripts/contract"
 
 export const Web3Context = createContext({
     web3: null,
@@ -44,7 +44,9 @@ export function Web3Provider({children})
             try {
                 const web3 = new Web3(window.ethereum)
                 setWeb3(web3)
-                setVmContract(await contract(web3))
+
+                const contract = await Contract(web3)
+                setVmContract(contract)
 
             } catch(err) {
                 console.log(err.message)
