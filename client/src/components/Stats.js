@@ -7,9 +7,10 @@ import CountDown from "react-countdown"
 import { zeroPad } from "react-countdown"
 import { GameContext } from "./GameProvider"
 
+
 export function Stats() 
 {
-    const { balance, gameRound, roundEndsAt, numOfEntries } = useContext(GameContext)
+    const { config, balance, gameRound, roundEndsAt, numOfEntries } = useContext(GameContext)
 
     let [roundEnds, setRoundEnds] = useState(0)
     let [remainingTime, setRemainingTime] = useState(0)
@@ -49,7 +50,7 @@ export function Stats()
                                     <Col className="item" sm={12} md={4}>
                                         <h5>In the Pot</h5>
                                         <span className="counter">
-                                            <CountUp end={balance} decimals={2} duration={2} /> ETH
+                                            <CountUp end={balance} decimals={2} duration={2} /> {config.currency.shortName}
                                         </span>
                                     </Col>
                                     <Col className="item" sm={12} md={4}>
