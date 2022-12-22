@@ -1,6 +1,18 @@
 import { createContext, useState, useCallback, useEffect } from "react"
 import Web3 from "web3"
-import Contract from "../scripts/contract"
+
+const getContractJson = async() => {
+    return (await import('../contracts/' + process.env.REACT_APP_CONTRACT_JSON)).default;
+}
+
+const Contract = async(web3) => {
+    const contractJson = await getContractJson()
+    
+    return new web3.eth.Contract(
+        contractJson.abi,
+        process.env.REACT_APP_CONTRACT_ADDRESS
+    )
+}
 
 export const Web3Context = createContext({
     web3: null,
@@ -68,8 +80,6 @@ export function Web3Provider({children})
     }, [vmContract])
 
     const doRefresh = useCallback(() => setRefresh({}), [])
-
-    const greet = async() => { alert('hello') }
 
     useEffect(() => {
         initializeWeb3()
