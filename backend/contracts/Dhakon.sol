@@ -328,6 +328,10 @@ contract Dhakon is VRFV2WrapperConsumerBase, AutomationCompatibleInterface {
         isPickingWinner = _val;
     }
 
+    function setIsPayingWinner(bool _val) external onlyOwner {
+        isPayingWinner = _val;
+    }
+
     function setIsPaused(bool _val) external onlyOwner {
         isPaused = _val;
     }
