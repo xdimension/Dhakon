@@ -48,6 +48,8 @@ export function Web3Provider({children})
                 const contract = await Contract(web3)
                 setVmContract(contract)
 
+                setHasWallet(true)
+
             } catch(err) {
                 console.log(err.message)
             }
