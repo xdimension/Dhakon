@@ -4,7 +4,7 @@ import { Web3Context } from "./Web3Provider"
 export const GameContext = createContext({
     gameRound: 0,
     balance: 0,
-    numOfPlayers: 0,
+    numOfEntries: 0,
 })
 
 export function GameProvider({children}) 
