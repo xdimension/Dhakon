@@ -1,5 +1,6 @@
 import { createContext, useState, useCallback, useEffect, useContext } from "react"
 import { Web3Context } from "./Web3Provider"
+import { config } from "../config"
 
 export const GameContext = createContext({
     gameRound: 0,
@@ -72,6 +73,7 @@ export function GameProvider({children})
     return (
         <GameContext.Provider
             value={{
+                config,
                 gameRound,
                 roundEndsAt,
                 balance,
