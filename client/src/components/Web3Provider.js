@@ -16,6 +16,7 @@ const Contract = async(web3) => {
 
 export const Web3Context = createContext({
     web3: null,
+    networkId: 0,
     vmContract: null,
     address: '',
     isOwner: false,
@@ -25,10 +26,20 @@ export function Web3Provider({children})
 {
     const [web3, setWeb3] = useState()
     const [hasWallet, setHasWallet] = useState(true)
+    const [networkId, setNetworkId] = useState(0)
     const [vmContract, setVmContract] = useState()
     const [address, setAddress] = useState()
     const [isOwner, setIsOwner] = useState()
     const [refresh, setRefresh] = useState()
+
+    const onNetworkChanged = useCallback(async() => {
+        if (web3) {
+            const netId = await web3.eth.net.getId()
+
+            console.log(`The network has changed to ${netId}`)
+            setNetworkId(netId)
+        }
+    }, [web3])
 
     const onAccountsChanged = useCallback(async() => {
         console.log('Handle accounts changed')
@@ -43,6 +54,8 @@ export function Web3Provider({children})
                     const isOwner = await vmContract.methods.isOwner(accounts[0]).call()
                     setIsOwner(isOwner)
                 }
+
+                doRefresh()
             }
         } catch(err) {
             console.log(err.message)
@@ -86,6 +99,18 @@ export function Web3Provider({children})
     }, [])
 
     useEffect(() => {
+        onNetworkChanged()
+    
+        if (window.ethereum) {
+            window.ethereum.on('chainChanged', onNetworkChanged);
+
+            return () => {
+                window.ethereum.removeListener('chainChanged', onNetworkChanged)
+            }
+        }
+    }, [web3])
+  
+    useEffect(() => {
         if (window.ethereum) {
             window.ethereum.on('accountsChanged', onAccountsChanged);
 
@@ -100,6 +125,7 @@ export function Web3Provider({children})
             value={{
                 web3,
                 hasWallet,
+                networkId,
                 vmContract,
                 connectToWallet,
                 address,
