@@ -15,7 +15,7 @@ export function GameProvider({children})
     const [roundEndsAt, setRoundEndsAt] = useState()
     const [numOfEntries, setNumOfEntries] = useState(0)
 
-    const { web3, vmContract, address, refresh, doRefresh } = useContext(Web3Context)
+    const { web3, networkId, vmContract, address, refresh, doRefresh } = useContext(Web3Context)
 
     const pickWinner = useCallback(async() => {
         if (vmContract && address) {
@@ -52,7 +52,7 @@ export function GameProvider({children})
     }, [vmContract, address])
 
     const getGameInfo = useCallback(async() => {
-        if (vmContract) {
+        if (vmContract && networkId == config.network.id) {
             console.log('Getting Game Info')
 
             const balance = await vmContract.methods.getBalance().call()
@@ -68,7 +68,7 @@ export function GameProvider({children})
 
     useEffect(() => {
         getGameInfo()
-    }, [vmContract, refresh])
+    }, [vmContract, networkId, refresh])
 
     return (
         <GameContext.Provider
