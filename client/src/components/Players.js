@@ -8,13 +8,13 @@ export function Players()
 {
     let num = 1;
 
-    const { vmContract, refresh } = useContext(Web3Context)
-    const { setNumOfPlayers } = useContext(GameContext)
+    const { networkId, vmContract, refresh } = useContext(Web3Context)
+    const { config, setNumOfPlayers } = useContext(GameContext)
     
     const [players, setPlayers] = useState([])
 
     const getPlayers = async() => {
-        if (vmContract) {
+        if (vmContract && networkId == config.network.id) {
             let players = await vmContract.methods.getPlayers(10).call()
             players = players.filter((player) => player != 0);
             const numOfPlayers = await vmContract.methods.getNumOfPlayers().call()
@@ -26,7 +26,7 @@ export function Players()
 
     useEffect(() => {
         getPlayers()
-    }, [vmContract, refresh])
+    }, [vmContract, networkId, refresh])
 
     return (
         <div className="players-bx wow slideInUp">

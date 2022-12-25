@@ -9,14 +9,14 @@ export function Tickets()
 {
     let num = 1;
 
-    const { vmContract, refresh } = useContext(Web3Context)
+    const { networkId, vmContract, refresh } = useContext(Web3Context)
     const { config, setNumOfEntries } = useContext(GameContext)
     
     const [tickets, setTickets] = useState([])
     const [trx, setTrx] = useState([])
 
     const getTickets = async() => {
-        if (vmContract) {
+        if (vmContract && networkId == config.network.id) {
             let tickets = await vmContract.methods.getTickets(10).call()
             tickets = tickets.filter((ticket) => ticket.time != 0);
             const numOfTickets = await vmContract.methods.getNumOfTickets().call()
@@ -40,7 +40,7 @@ export function Tickets()
 
     useEffect(() => {
         getTickets()
-    }, [vmContract, refresh])
+    }, [vmContract, networkId, refresh])
 
     useEffect(() => {
         getTrx(tickets.map(t => t.num))

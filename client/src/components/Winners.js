@@ -7,14 +7,14 @@ import viewTrxIcon from '../assets/img/view-trx-icon.svg'
 
 export function Winners() 
 {
-    const { vmContract, refresh } = useContext(Web3Context)
+    const { networkId, vmContract, refresh } = useContext(Web3Context)
     const { config } = useContext(GameContext)
     
     const [winners, setWinners] = useState([])
     const [trx, setTrx] = useState([])
 
     const getWinners = async() => {
-        if (vmContract) {
+        if (vmContract && networkId == config.network.id) {
             let winners = await vmContract.methods.getWinners(10).call()
             winners = winners.filter((winner) => winner.ticket != 0);
             setWinners(winners)
@@ -22,7 +22,7 @@ export function Winners()
     }
 
     const getTrx = async (ticketNums) => {
-        if (vmContract) {
+        if (vmContract && networkId == config.network.id) {
             let trx = await vmContract.getPastEvents('WinnerChosen', {
                 filter: { ticket: ticketNums },
                 fromBlock: 0,
@@ -35,7 +35,7 @@ export function Winners()
 
     useEffect(() => {
         getWinners()
-    }, [vmContract, refresh])
+    }, [vmContract, networkId, refresh])
 
     useEffect(() => {
         getTrx(winners.map(t => t.ticket))
