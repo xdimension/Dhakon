@@ -1,8 +1,9 @@
 import { createContext, useState, useCallback, useEffect } from "react"
 import Web3 from "web3"
+import { config } from "../config"
 
 const getContractJson = async() => {
-    return (await import('../contracts/' + process.env.REACT_APP_CONTRACT_JSON)).default;
+    return (await import('../contracts/' + config.contract.jsonFile)).default;
 }
 
 const Contract = async(web3) => {
@@ -10,7 +11,7 @@ const Contract = async(web3) => {
     
     return new web3.eth.Contract(
         contractJson.abi,
-        process.env.REACT_APP_CONTRACT_ADDRESS
+        config.contract.address
     )
 }
 
