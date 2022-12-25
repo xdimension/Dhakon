@@ -3,8 +3,12 @@ import TrackVisibility from 'react-on-screen'
 import headerImg from "../assets/img/piggybank.png"
 import { EnterPot } from "./EnterPot"
 import 'animate.css'
+import { useContext } from "react"
+import { GameContext } from "./GameProvider"
 
 export const Banner = () => {
+
+  const { config } = useContext(GameContext)
 
   return (
     <section className="banner" id="home">
@@ -14,7 +18,7 @@ export const Banner = () => {
             <TrackVisibility>
               {({ isVisible }) =>
               <div className={isVisible ? "animate__animated animate__fadeIn" : ""}>
-                <span className="tagline">Welcome to CrowdPot</span>
+                <span className="tagline">Welcome to {config.appName}</span>
                 <h1>{`Hi! Is Today Your Luckiest Day?`}</h1>
                 <h5 className="mt-4">You have a chance to WIN the JACKPOT with only a small bid!</h5>
                 
