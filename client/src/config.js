@@ -1,6 +1,10 @@
 exports.config = {
 
     ticketPrice: 0.1,            // The price of 1 ticket to join
+    network: {
+        name: 'Polygon Mumbai',
+        id: 80001
+    },
     token: {
         name: 'MATIC',           // 'Ether'   
         platform: 'Polygon',     // 'Ethereum'
