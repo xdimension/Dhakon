@@ -64,7 +64,7 @@ export function GameProvider({children})
             const roundEnds = await vmContract.methods.roundEndsAt().call()
             setRoundEndsAt(roundEnds)
         }
-    }, [vmContract])
+    }, [vmContract, networkId])
 
     useEffect(() => {
         getGameInfo()
