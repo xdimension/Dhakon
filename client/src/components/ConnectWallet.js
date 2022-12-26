@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react"
+import { useContext } from "react"
 import { Web3Context } from "./Web3Provider"
 import truncateEthAddress from "truncate-eth-address"
 
