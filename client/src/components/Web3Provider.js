@@ -89,7 +89,7 @@ export function Web3Provider({children})
         if (vmContract) {
             onAccountsChanged()
         } else {
-            alert('Please connect Metamask to the network')
+            alert('Cannot connect to wallet, is Metamask installed?')
         }
     }, [vmContract])
 
