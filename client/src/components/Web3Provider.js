@@ -1,6 +1,8 @@
 import { createContext, useState, useCallback, useEffect } from "react"
+import { Toast } from "react-bootstrap";
 import Web3 from "web3"
 import { config } from "../config"
+import { toast } from "react-toastify"
 
 const getContractJson = async() => {
     return (await import('../contracts/' + config.contract.jsonFile)).default;
@@ -89,7 +91,7 @@ export function Web3Provider({children})
         if (vmContract) {
             onAccountsChanged()
         } else {
-            alert('Cannot connect to wallet, is Metamask installed?')
+            toast.error('Cannot connect to wallet, is Metamask installed?')
         }
     }, [vmContract])
 
