@@ -1,5 +1,5 @@
-import { useContext } from "react"
-import { ArrowRightCircle } from 'react-bootstrap-icons'
+import { useContext, useState } from "react"
+import { PiggyBank as EnterIcon, HourglassSplit as LoadingIcon} from 'react-bootstrap-icons'
 import { GameContext } from "./GameProvider"
 import { Web3Context } from "./Web3Provider"
 import { toast } from "react-toastify"
@@ -8,6 +8,8 @@ export function EnterPot()
 {
     let { web3, networkId, vmContract, address, doRefresh } = useContext(Web3Context)
     let { config, numOfEntries, roundEndsAt } = useContext(GameContext)
+
+    const [isLoading, setIsLoading]  = useState(false)
 
     const enterPotHandler = async() => {
         if (networkId && networkId != config.network.id) {
@@ -29,6 +31,7 @@ export function EnterPot()
         }
 
         try {
+            setIsLoading(true)
             await vmContract.methods.enter()
                 .send({
                     from: address,
@@ -38,10 +41,12 @@ export function EnterPot()
             doRefresh()
         } catch(err) {
             console.log(err.message)
+        } finally {
+            setIsLoading(false)
         }
     }
     
     return (
-        <button onClick={enterPotHandler}>Join the Pot <ArrowRightCircle size={25} /></button>
+        <button onClick={enterPotHandler}>Join the Pot {isLoading? <LoadingIcon size={30} /> : <EnterIcon size={45} />}</button>
     )
 }
