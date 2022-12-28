@@ -109,14 +109,14 @@ nav.navbar {
   padding: 18px 0;
   width: 100%;
   z-index: 999;
-  transition:  0.32s ease-in-out;
+  transition: 0.32s ease-in-out;
   opacity: 80%;
 }
 nav.navbar.scrolled {
   position:fixed;
   padding: 0;
+  background-color: #121212;
 }
-nav.navbar.scrolled, 
 nav.navbar:has(.navbar-collapse.show) {
   background-color: #121212;
 }
