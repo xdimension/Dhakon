@@ -2,8 +2,8 @@ import { useContext, useState } from "react"
 import { GameContext } from "./GameProvider"
 import { Web3Context } from "./Web3Provider"
 import { toast } from "react-toastify"
-import { PiggyBank as EnterIcon } from "react-bootstrap-icons"
-import { RotateSpinner as LoadingIcon} from "react-spinners-kit"
+// import { PiggyBank as EnterIcon } from "react-bootstrap-icons"
+import { CubeSpinner as EnterIcon, RotateSpinner as LoadingIcon} from "react-spinners-kit"
 
 export function EnterPot() 
 {
@@ -50,7 +50,7 @@ export function EnterPot()
     return (
         <button onClick={enterPotHandler}>
             <span className="btn-text">Join the Pot</span> 
-            {!isLoading? <EnterIcon size={40} /> : <LoadingIcon size={30} color="#fff" />}
+            {!isLoading? <EnterIcon size={25} frontColor="#fa8c05" backColor="#eee" /> : <LoadingIcon size={30} color="#fff" />}
         </button>
     )
 }

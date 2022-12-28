@@ -307,7 +307,7 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
   letter-spacing: 0.8px;
   line-height: 1.2em;
   padding-top: 5px;
-  margin-right: 17px;
+  margin-right: 20px;
 }
 .banner button:hover svg {
   animation: upup 1s ease infinite;
