@@ -1,8 +1,7 @@
 import { createContext, useState, useCallback, useEffect } from "react"
-import { Toast } from "react-bootstrap";
 import Web3 from "web3"
 import { config } from "../config"
-import { toast } from "react-toastify"
+
 
 const getContractJson = async() => {
     return (await import('../contracts/' + config.contract.jsonFile)).default;
@@ -50,7 +49,7 @@ export function Web3Provider({children})
         try {
             const accounts = await window.ethereum.request({ method: "eth_requestAccounts" })
 
-            if (accounts[0] !== address) {
+            if (accounts.length > 0 && accounts[0] !== address) {
                 setAddress(accounts[0]);
 
                 if (vmContract) {
@@ -68,6 +67,7 @@ export function Web3Provider({children})
     const initializeWeb3 = useCallback(async() => {
         if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
             console.log('Initializing Web3')
+            setHasWallet(true)
 
             try {
                 const web3 = new Web3(window.ethereum)
@@ -75,8 +75,6 @@ export function Web3Provider({children})
 
                 const contract = await Contract(web3)
                 setVmContract(contract)
-
-                setHasWallet(true)
 
             } catch(err) {
                 console.log(err.message)
@@ -87,14 +85,6 @@ export function Web3Provider({children})
         }
     }, [])
 
-    const connectToWallet = useCallback(async() => {
-        if (vmContract) {
-            onAccountsChanged()
-        } else {
-            toast.error('Cannot connect to wallet, is Metamask installed?')
-        }
-    }, [vmContract])
-
     const doRefresh = useCallback(() => setRefresh({}), [])
 
     useEffect(() => {
@@ -102,9 +92,9 @@ export function Web3Provider({children})
     }, [])
 
     useEffect(() => {
-        onNetworkChanged()
-    
         if (window.ethereum) {
+            onNetworkChanged()
+
             window.ethereum.on('chainChanged', onNetworkChanged);
 
             return () => {
@@ -130,8 +120,8 @@ export function Web3Provider({children})
                 hasWallet,
                 networkId,
                 vmContract,
-                connectToWallet,
                 address,
+                onAccountsChanged,
                 isOwner,
                 refresh,
                 doRefresh
