@@ -3,11 +3,11 @@ import { Web3Context } from "./Web3Provider"
 import truncateEthAddress from "truncate-eth-address"
 import { toast } from "react-toastify"
 
-export function ConnectWallet() 
+export function ConnectToWallet() 
 {
     const { vmContract, address, onAccountsChanged } = useContext(Web3Context)
 
-    const connectToWallet = async() => {
+    const connectToWalletHandler = async() => {
         if (vmContract) {
             onAccountsChanged()
         } else {
@@ -16,7 +16,7 @@ export function ConnectWallet()
     }
 
     return (
-        <button className="vvd" onClick={connectToWallet}>
+        <button className="vvd" onClick={connectToWalletHandler}>
             <span>{ address ? truncateEthAddress(address) : "Connect to Wallet"}</span>
         </button>
     )
