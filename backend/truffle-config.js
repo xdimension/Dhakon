@@ -19,7 +19,7 @@
  */
 
 require('dotenv').config();
-const mnemonic = process.env["MNEMONIC"];
+const mnemonic = process.env["ACCT_PRIVATE_KEY"];
 // const infuraProjectId = process.env["INFURA_PROJECT_ID"];
 const HDWalletProvider = require('@truffle/hdwallet-provider');
 
