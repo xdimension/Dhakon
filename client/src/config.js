@@ -6,16 +6,16 @@ exports.config = {
     },
 
     network: {
-        name: 'Polygon Mumbai',
-        id: 80001
+        name: 'Polygon Amoy',
+        id: 80002
     },
 
     token: {
-        name: 'MATIC',           // 'Ether'   
+        name: 'MATIC',           // 'Ether'
         platform: 'Polygon',     // 'Ethereum'
         shortName: 'MATIC',      // 'Ether'
         unitName: 'MATIC',       // 'ETH'
-        explorerUrl: 'https://mumbai.polygonscan.com/tx/'
+        explorerUrl: 'https://amoy.polygonscan.com/tx/'
     },
 
     ticketPrice: 0.1,            // The price of 1 ticket to join
